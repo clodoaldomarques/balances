@@ -1,5 +1,5 @@
 ## build
-FROM golang:1.20 AS build
+FROM golang:1.21 AS build
 
 WORKDIR /app
 
@@ -16,11 +16,10 @@ FROM ubuntu AS base
 WORKDIR /
 
 COPY --from=build /balances-api /balances-api
-COPY .env /
 
 #mysql access
-ENV MYSQL_DB_HOST=localhost
-ENV MYSQL_DB_PORT=3306
+ENV MYSQL_DB_HOST=192.168.49.2
+ENV MYSQL_DB_PORT=30306
 ENV MYSQL_DB_NOME=balances
 ENV MYSQL_DB_USUARIO=admin
 ENV MYSQL_DB_SENHA=b4l4nc3s
