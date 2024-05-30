@@ -1,0 +1,87 @@
+# disk volume claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    com.job.service: localstack-claim
+  name: localstack-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+status: {}
+---
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    com.job.service: localstack-deployment
+  name: localstack-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      com.job.service: localstack-deployment
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        com.job.service: localstack-deployment
+    spec:
+      containers:
+        - env:
+            - name: AWS_DEFAULT_REGION
+              value: 'us-east-1'
+            - name: SERVICES
+              value: 'sqs,sns,dynamodb'
+          image: localstack/localstack
+          imagePullPolicy: IfNotPresent
+          name: localstack-main
+          ports:
+            - name: edge
+              containerPort: 4566
+              protocol: TCP
+            - name: es
+              containerPort: 4571
+              protocol: TCP
+            - name: ui
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /tmp/localstack
+              name: localstack-claim
+      restartPolicy: Always
+      serviceAccountName: localstack-account
+      volumes:
+        - name: localstack-claim
+          persistentVolumeClaim:
+            claimName: localstack-claim
+status: {}
+---
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    com.job.service: localstack-service
+  name: localstack-service
+spec:
+  ports:
+    - port: 4566
+      name: edge
+      nodePort: 30566
+    - port: 4571
+      name: es
+      nodePort: 30571      
+    - port: 8080
+      name: ui
+      nodePort: 30808      
+  selector:
+    com.job.service: localstack-service
+  type: LoadBalancer

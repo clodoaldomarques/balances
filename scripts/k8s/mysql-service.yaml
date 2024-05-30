@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-mysql
+  labels:
+    com.job.service: db-mysql
+    tier: mysql
+spec:
+  selector: 
+    matchLabels:
+      com.job.service: db-mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: 
+        com.job.service: db-mysql
+        tier: mysql
+    spec:
+      containers:
+        - name: db-mysql
+          image: mysql
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                 secretKeyRef:
+                   name: root-pass
+                   key: password
+            - name: MYSQL_USER
+              value: admin
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                 secretKeyRef:
+                   name: balances-pass
+                   key: password                   
+            - name: MYSQL_DATABASE
+              value: balances
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-persistance-storage
+      volumes:
+        - name: mysql-persistance-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  labels:
+    com.job.service: mysql-service
+spec:
+  ports:
+    - port: 3306
+      nodePort: 30306
+  selector:
+    com.job.service: db-mysql
+    tier: mysql
+  type: LoadBalancer
+  
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: 
+  name: mysql-pv-claim
+  labels:
+    app: mysql
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
