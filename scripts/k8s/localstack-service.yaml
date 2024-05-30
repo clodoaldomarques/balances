@@ -18,7 +18,6 @@ status: {}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     com.job.service: localstack-deployment
   name: localstack-deployment
@@ -50,11 +49,8 @@ spec:
             - name: es
               containerPort: 4571
               protocol: TCP
-            - name: ui
-              containerPort: 8080
-              protocol: TCP
           volumeMounts:
-            - mountPath: /tmp/localstack
+            - mountPath: /var/lib/localstack
               name: localstack-claim
       restartPolicy: Always
       serviceAccountName: localstack-account
@@ -62,7 +58,14 @@ spec:
         - name: localstack-claim
           persistentVolumeClaim:
             claimName: localstack-claim
-status: {}
+---
+# service account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: localstack-account
+  labels:
+    com.job.service: localstack-service-account
 ---
 # service
 apiVersion: v1
@@ -72,16 +75,15 @@ metadata:
     com.job.service: localstack-service
   name: localstack-service
 spec:
+  type: NodePort
   ports:
     - port: 4566
       name: edge
-      nodePort: 30566
+      targetPort: 4566
+      nodePort: 30456
     - port: 4571
       name: es
-      nodePort: 30571      
-    - port: 8080
-      name: ui
-      nodePort: 30808      
+      targetPort: 4571
+      nodePort: 30457      
   selector:
     com.job.service: localstack-service
-  type: LoadBalancer

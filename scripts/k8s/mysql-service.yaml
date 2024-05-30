@@ -54,13 +54,14 @@ metadata:
   labels:
     com.job.service: mysql-service
 spec:
+  type: NodePort
   ports:
     - port: 3306
+      targetPort: 3306
       nodePort: 30306
   selector:
     com.job.service: db-mysql
     tier: mysql
-  type: LoadBalancer
   
 ---
 apiVersion: v1
