@@ -50,12 +50,12 @@ spec:
               containerPort: 4571
               protocol: TCP
           volumeMounts:
-            - mountPath: /var/lib/localstack
-              name: localstack-claim
+            - name: localstack-storage 
+              mountPath: /var/lib/localstack
       restartPolicy: Always
       serviceAccountName: localstack-account
       volumes:
-        - name: localstack-claim
+        - name: localstack-storage
           persistentVolumeClaim:
             claimName: localstack-claim
 ---

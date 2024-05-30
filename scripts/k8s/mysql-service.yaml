@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: db-mysql
+  name: mysql-deployment
   labels:
-    com.job.service: db-mysql
+    com.job.service: mysql-db
     tier: mysql
 spec:
   selector: 
     matchLabels:
-      com.job.service: db-mysql
+      com.job.service: mysql-db
   strategy:
     type: Recreate
   template:
     metadata:
       labels: 
-        com.job.service: db-mysql
+        com.job.service: mysql-db
         tier: mysql
     spec:
       containers:
-        - name: db-mysql
+        - name: mysql-db
           image: mysql
           imagePullPolicy: "IfNotPresent"
           env:
@@ -41,9 +41,9 @@ spec:
               name: mysql
           volumeMounts:
             - mountPath: /var/lib/mysql
-              name: mysql-persistance-storage
+              name: mysql-storage
       volumes:
-        - name: mysql-persistance-storage
+        - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-pv-claim
 ---
@@ -60,7 +60,7 @@ spec:
       targetPort: 3306
       nodePort: 30306
   selector:
-    com.job.service: db-mysql
+    com.job.service: mysql-db
     tier: mysql
   
 ---

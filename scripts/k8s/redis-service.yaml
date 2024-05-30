@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-master
+  name: redis-deployment
   labels:
-    app: redis
+    com.job.service: redis
 spec:
   selector:
     matchLabels:
-      app: redis
+      com.job.service: redis
   replicas: 1
   template:
     metadata:
       labels:
-        app: redis
+        com.job.service: redis
         role: master
     spec:
       containers:
@@ -26,12 +26,14 @@ kind: Service
 metadata:
   name: redis-service
   labels:
-    app: redis-service
+    com.job.service: redis-service
     role: master
 spec:
+  type: NodePort
   ports:
   - port: 6379
     targetPort: 6379
+    nodePort: 30379
   selector:
-    app: redis
+    com.job.service: redis
     role: master
