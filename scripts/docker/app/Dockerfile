@@ -32,8 +32,7 @@ ENV AWS_ID="test"
 ENV AWS_SECRET="test"
 
 #SnS
-ENV CREATE_ACCOUNT_SNS_TOPIC="arn:aws:sns:us-east-1:000000000000:create-account-sns-topic"
-ENV CHANGE_AVAILABLE_SNS_TOPIC="arn:aws:sns:us-east-1:000000000000:change-available-sns-topic"
+ENV CREATE_ACCOUNT_SNS_TOPIC="arn:aws:sns:us-east-1:000000000000:account-sns-topic"
 
 EXPOSE 5000
 

@@ -16,13 +16,12 @@ var (
 	ConnectionString = ""
 
 	// aws configurations
-	AwsAddress              = ""
-	AwsRegion               = ""
-	AwsProfile              = ""
-	AwsID                   = ""
-	AwsSecret               = ""
-	SnsCreateAccountTopic   = ""
-	SnsChangeAvailableTopic = ""
+	AwsAddress      = ""
+	AwsRegion       = ""
+	AwsProfile      = ""
+	AwsID           = ""
+	AwsSecret       = ""
+	SnsAccountTopic = ""
 )
 
 func Load() {
@@ -39,8 +38,7 @@ func Load() {
 	AwsID = os.Getenv("AWS_ID")
 	AwsSecret = os.Getenv("AWS_SECRET")
 
-	SnsCreateAccountTopic = os.Getenv("CREATE_ACCOUNT_SNS_TOPIC")
-	SnsChangeAvailableTopic = os.Getenv("CHANGE_AVAILABLE_SNS_TOPIC")
+	SnsAccountTopic = os.Getenv("ACCOUNT_SNS_TOPIC")
 }
 
 func getMySQLConnectionString() string {
@@ -51,20 +49,4 @@ func getMySQLConnectionString() string {
 		os.Getenv("MYSQL_DB_PORT"),
 		os.Getenv("MYSQL_DB_NOME"),
 	)
-}
-
-func getMongoDBConnectionURL() string {
-	database := os.Getenv("MONGO_DB_NOME")
-	user := os.Getenv("MONGO_DB_USUARIO")
-	pass := os.Getenv("MONGO_DB_SENHA")
-	host := os.Getenv("MONGO_DB_HOST")
-	port := os.Getenv("MONGO_DB_PORT")
-
-	if user == "" || pass == "" {
-		return fmt.Sprintf("mongodb://%s:%s/%s?replicaSet=rs1", host, port, database)
-		//	return fmt.Sprintf("mongodb://%s:%s/%s?directConnection=true", host, port, database)
-	}
-
-	return fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?directConnection=true&replicaSet=rs1", user, pass, host, port, database)
-	//return fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?directConnection=true", user, pass, host, port, database)
 }
