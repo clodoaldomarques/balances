@@ -13,7 +13,6 @@ spec:
     metadata:
       labels:
         com.job.service: redis
-        role: master
     spec:
       containers:
       - name: master
@@ -27,7 +26,6 @@ metadata:
   name: redis-service
   labels:
     com.job.service: redis-service
-    role: master
 spec:
   type: NodePort
   ports:
@@ -36,4 +34,3 @@ spec:
     nodePort: 30379
   selector:
     com.job.service: redis
-    role: master

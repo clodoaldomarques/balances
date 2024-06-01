@@ -34,14 +34,14 @@ spec:
         com.job.service: localstack-deployment
     spec:
       containers:
-        - env:
+        - name: localstack-main
+          image: localstack/localstack
+          imagePullPolicy: "IfNotPresent"
+          env:            
             - name: AWS_DEFAULT_REGION
               value: 'us-east-1'
             - name: SERVICES
               value: 'sqs,sns,dynamodb'
-          image: localstack/localstack
-          imagePullPolicy: IfNotPresent
-          name: localstack-main
           ports:
             - name: edge
               containerPort: 4566
@@ -49,6 +49,20 @@ spec:
             - name: es
               containerPort: 4571
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: edge
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: edge              
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            timeoutSeconds: 10
           volumeMounts:
             - name: localstack-storage 
               mountPath: /var/lib/localstack
@@ -80,10 +94,10 @@ spec:
     - port: 4566
       name: edge
       targetPort: 4566
-      nodePort: 30456
+      nodePort: 30566
     - port: 4571
       name: es
       targetPort: 4571
-      nodePort: 30457      
+      nodePort: 30571      
   selector:
     com.job.service: localstack-service

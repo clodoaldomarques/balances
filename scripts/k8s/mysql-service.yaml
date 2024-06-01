@@ -37,11 +37,11 @@ spec:
             - name: MYSQL_DATABASE
               value: balances
           ports:
-            - containerPort: 3306
-              name: mysql
+            - name: mysql
+              containerPort: 3306
           volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: mysql-storage
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
       volumes:
         - name: mysql-storage
           persistentVolumeClaim:
