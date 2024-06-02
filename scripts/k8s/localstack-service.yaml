@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
         - name: localstack-main
-          image: localstack/localstack
+          image: localstack/localstack:stable
           imagePullPolicy: "IfNotPresent"
           env:            
             - name: AWS_DEFAULT_REGION
@@ -43,23 +43,49 @@ spec:
             - name: SERVICES
               value: 'sqs,sns,dynamodb'
           ports:
-            - name: edge
-              containerPort: 4566
-              protocol: TCP
-            - name: es
-              containerPort: 4571
-              protocol: TCP
+            - containerPort: 4566
+            - containerPort: 4567
+            - containerPort: 4568
+            - containerPort: 4569
+            - containerPort: 4570
+            - containerPort: 4571
+            - containerPort: 4572
+            - containerPort: 4573
+            - containerPort: 4574
+            - containerPort: 4575
+            - containerPort: 4576
+            - containerPort: 4577
+            - containerPort: 4578
+            - containerPort: 4579
+            - containerPort: 4580
+            - containerPort: 4581
+            - containerPort: 4582
+            - containerPort: 4583
+            - containerPort: 4584
+            - containerPort: 4585
+            - containerPort: 4586
+            - containerPort: 4587
+            - containerPort: 4588
+            - containerPort: 4589
+            - containerPort: 4590
+            - containerPort: 4591
+            - containerPort: 4592
+            - containerPort: 4593
+            - containerPort: 4594
+            - containerPort: 4595
+            - containerPort: 4596
+            - containerPort: 4597
           livenessProbe:
             httpGet:
               path: /
-              port: edge
+              port: 4566
             initialDelaySeconds: 300
             periodSeconds: 20
             timeoutSeconds: 10
           readinessProbe:
             httpGet:
               path: /
-              port: edge              
+              port: 4566              
             initialDelaySeconds: 300
             periodSeconds: 20
             timeoutSeconds: 10
@@ -100,4 +126,6 @@ spec:
       targetPort: 4571
       nodePort: 30571      
   selector:
-    com.job.service: localstack-service
+    com.job.service: localstack-deployment
+status:
+  loadBalancer: {}
