@@ -2,11 +2,10 @@ CREATE TABLE accounts(
     account_id bigint primary key,
     org_id varchar(100) not null,
     limits json not null,
-    availables json not null,
+    balances json not null,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
-    allow_credit tinyint(1) not null default 1,
-    allow_debit tinyint(1) not null default 1,
+    status varchar(100) not null default "ACTIVE",
     version bigint not null default 1
 );
 
