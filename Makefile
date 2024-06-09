@@ -34,9 +34,11 @@ kube-delete:
 	kubectl delete -f scripts/k8s/redis-service.yaml
 
 terraform:
-	terraform -chdir=scripts/terraform/ init
 	terraform -chdir=scripts/terraform/ plan
 	terraform -chdir=scripts/terraform/ apply
+
+terraform-init:
+	terraform -chdir=scripts/terraform/ init
 
 test:
 	go test ./... -coverprofile cover.out

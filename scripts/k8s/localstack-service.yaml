@@ -124,7 +124,7 @@ spec:
     - port: 4571
       name: es
       targetPort: 4571
-      nodePort: 30571      
+      nodePort: 30571
   selector:
     com.job.service: localstack-deployment
 status:
