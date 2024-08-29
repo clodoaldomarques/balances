@@ -1,3 +1,3 @@
-resource "aws_sns_topic" "account-sns-topic" {
-  name = "account-sns-topic"
+resource "aws_sns_topic" "balances-sns-topic" {
+  name = "balances-sns-topic"
 }

@@ -9,6 +9,27 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+func init() {
+	decimal.MarshalJSONWithoutQuotes = true
+}
+
+type DecimalMap map[string]decimal.Decimal
+
+func (d DecimalMap) Value() (driver.Value, error) {
+	return json.Marshal(d)
+}
+
+func (d *DecimalMap) Scan(src interface{}) error {
+	switch data := src.(type) {
+	case []byte:
+		return json.Unmarshal(data, d)
+	case string:
+		return json.Unmarshal([]byte(data), d)
+	default:
+		return fmt.Errorf("unsupported type: %T", src)
+	}
+}
+
 type Status string
 
 const (
@@ -43,23 +64,21 @@ type Account struct {
 	Version   int64      `json:"version,omitempty"`
 }
 
-func init() {
-	decimal.MarshalJSONWithoutQuotes = true
+func (a *Account) ChangeStatus(status Status) {
+	a.Status = status
+	a.IncreaseVersion()
 }
 
-type DecimalMap map[string]decimal.Decimal
-
-func (d DecimalMap) Value() (driver.Value, error) {
-	return json.Marshal(d)
-}
-
-func (d *DecimalMap) Scan(src interface{}) error {
-	switch data := src.(type) {
-	case []byte:
-		return json.Unmarshal(data, d)
-	case string:
-		return json.Unmarshal([]byte(data), d)
-	default:
-		return fmt.Errorf("unsupported type: %T", src)
+func (a *Account) ChangeLimit(limit string, value decimal.Decimal) error {
+	if a.Status == Inative {
+		return ErrAccountDisabled
 	}
+	a.Limits[limit] = value
+	a.IncreaseVersion()
+	return nil
+}
+
+func (a *Account) IncreaseVersion() {
+	a.Version++
+	a.UpdatedAt = time.Now()
 }
