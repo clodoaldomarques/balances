@@ -114,16 +114,6 @@ type Account struct {
 	Version   int64      `json:"version,omitempty"`
 }
 
-func (a *Account) UpdateAccountLimits(limits map[string]decimal.Decimal) error {
-	for key, value := range limits {
-		a.Limits[key] = value
-	}
-
-	a.UpdatedAt = time.Now().UTC()
-
-	return nil
-}
-
 func (a *Account) UpdateAccountStatus(status Status) error {
 	a.Status = status
 	a.UpdatedAt = time.Now().UTC()

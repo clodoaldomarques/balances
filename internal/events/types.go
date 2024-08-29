@@ -58,25 +58,25 @@ type ChangeBalanceEvent struct {
 }
 
 func (c ChangeBalanceEvent) GetTrackingID() string {
-
+	return c.TrackingID
 }
 func (c ChangeBalanceEvent) GetEventType() string {
-
+	return c.EventType
 }
 func (c ChangeBalanceEvent) GetAccountID() int64 {
-
+	return c.AccountID
 }
 func (c ChangeBalanceEvent) GetTenantID() string {
-
+	return c.TenantID
 }
 func (c ChangeBalanceEvent) GetEventDate() time.Time {
-
+	return c.EventDate
 }
 func (c ChangeBalanceEvent) GetVersion() int64 {
-
+	return c.Version
 }
 func (c ChangeBalanceEvent) GetEventData() string {
-
+	return c.EventDate.String()
 }
 
 type ChangeLimitsEvent struct {
