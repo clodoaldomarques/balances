@@ -1,69 +1,68 @@
 package accounts
 
 import (
-	"context"
+	"errors"
 	"fmt"
 
 	"github.com/shopspring/decimal"
 )
 
-type Service struct {
-	repo AccountRepo
-	publ Publisher
+type rule = func(*Account, decimal.Decimal) error
+
+var considers = map[string]rule{
+	"AvailableBalance": validateDebitAvailableBalance,
+	"SavingsBalance":   validateDebitSavingsBalance,
+	"BlockedBalance":   validateDebitBlockedBalance,
 }
 
-func NewService(rep AccountRepo, pub Publisher) *Service {
-	return &Service{
-		repo: rep,
-		publ: pub,
-	}
-}
-
-func (s Service) CreateAccount(ctx context.Context, acc Account) error {
-	if err := s.repo.CreateNewAccount(ctx, acc); err != nil {
-		return err
+func validateDebitAvailableBalance(a *Account, amount decimal.Decimal) error {
+	if a.Balances[AvailableBalance].LessThan(amount) {
+		return errors.New("available balance can not less than amount")
 	}
 	return nil
 }
 
-func (s Service) UpdateAccountLimits(ctx context.Context, acc Account) error {
-	account, err := s.repo.RetrieveAccountByID(ctx, acc.AccountID, acc.TenantID)
-	if err != nil {
-		return fmt.Errorf("can't update account: %v", err)
+func validateDebitSavingsBalance(a *Account, amount decimal.Decimal) error {
+	if a.Balances[SavingsBalance].LessThan(amount) {
+		return errors.New("savings balance can not less than amount")
 	}
-
-	if err := account.UpdateAccountLimits(acc.Limits); err != nil {
-		return fmt.Errorf("can´t update account limits: %v", err)
-	}
-
 	return nil
 }
 
-func (s Service) UpdateAccountStatus(ctx context.Context, accountID int64, tenantID string, status string) error {
-	account, err := s.repo.RetrieveAccountByID(ctx, accountID, tenantID)
-	if err != nil {
-		return fmt.Errorf("can't update account: %v", err)
+func validateDebitBlockedBalance(a *Account, amount decimal.Decimal) error {
+	if a.Balances[BlockedBalance].LessThan(amount) {
+		return errors.New("blocked balance can not less than amount")
 	}
-
-	if err := account.UpdateAccountStatus(Status(status)); err != nil {
-		return fmt.Errorf("can't update account: %v", err)
-	}
-
 	return nil
 }
 
-func (s Service) UpdateAccountBalances(ctx context.Context, accountID int64, tenantID string, operation string, balances map[string]decimal.Decimal, amount decimal.Decimal) error {
-	account, err := s.repo.RetrieveAccountByID(ctx, accountID, tenantID)
-	if err != nil {
-		return fmt.Errorf("can't update account: %v", err)
-	}
-	for b, _ := range balances {
-		account.UpdateAccountBalances(operation, b, amount, nil)
-	}
+type operationType = func(a *Account, balance string, amount decimal.Decimal, rules []string) error
 
+var Operation = map[string]operationType{
+	"DEBIT":  debit,
+	"CREDIT": credit,
+}
+
+func credit(a *Account, balance string, amount decimal.Decimal, rules []string) error {
+	if a.Status != Active && a.Status != OnlyCredit {
+		return errors.New("operation invalid")
+	}
+	if len(rules) > 0 {
+		return errors.New("is not necessary rules for credit")
+	}
+	a.Balances[balance] = a.Balances[balance].Add(amount)
 	return nil
 }
 
-func (s Service) RetrieveAccountByID(ctx context.Context, accountID int64, tenantID string) (Account, error) {
-	return s.repo.RetrieveAccountByID(ctx, accountID, tenantID)
+func debit(a *Account, balance string, amount decimal.Decimal, rules []string) error {
+	if a.Status != Active && a.Status != OnlyDebit {
+		return errors.New("operation invalid")
+	}
+	for _, r := range rules {
+		if err := considers[r](a, amount); err != nil {
+			return fmt.Errorf("Validation: %v", err)
+		}
+	}
+	a.Balances[balance] = a.Balances[balance].Sub(amount)
+	return nil
 }
