@@ -1,6 +1,7 @@
 package accounts
 
 import (
+	"balances/internal/entries"
 	"testing"
 	"time"
 
@@ -154,7 +155,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 	tests := []struct {
 		name  string
 		setup func() Account
-		args  func() []Impact
+		args  func() []entries.Impact
 		want  func(t *testing.T, a Account, e error)
 	}{
 		{
@@ -162,8 +163,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "available_balance",
 						Operation: "CREDIT",
@@ -183,8 +184,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "savings_balance",
 						Operation: "CREDIT",
@@ -204,8 +205,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "CREDIT",
@@ -225,8 +226,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "available_balance",
 						Operation: "DEBIT",
@@ -246,8 +247,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "savings_balance",
 						Operation: "DEBIT",
@@ -267,8 +268,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "DEBIT",
@@ -288,8 +289,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "available_balance",
 						Operation: "DEBIT",
@@ -316,8 +317,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "available_balance",
 						Operation: "DEBIT",
@@ -337,8 +338,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "savings_balance",
 						Operation: "DEBIT",
@@ -358,8 +359,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "DEBIT",
@@ -381,8 +382,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 				a.ChangeStatus(OnlyCredit)
 				return a
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "DEBIT",
@@ -404,8 +405,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 				a.ChangeStatus(OnlyDebit)
 				return a
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "CREDIT",
@@ -427,8 +428,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 				a.ChangeStatus(Inative)
 				return a
 			},
-			args: func() []Impact {
-				return []Impact{
+			args: func() []entries.Impact {
+				return []entries.Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "CREDIT",

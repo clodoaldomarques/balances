@@ -1,6 +1,7 @@
 package accounts
 
 import (
+	"balances/internal/entries"
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
@@ -83,7 +84,7 @@ func (a *Account) ChangeLimit(limit string, value decimal.Decimal) error {
 	return nil
 }
 
-func (a *Account) ChangeBalances(impacts []Impact) error {
+func (a *Account) ChangeBalances(impacts []entries.Impact) error {
 	for _, i := range impacts {
 		for _, r := range i.Rules {
 			if err := rules[r](a, i.Amount); err != nil {
@@ -101,13 +102,6 @@ func (a *Account) ChangeBalances(impacts []Impact) error {
 func (a *Account) IncreaseVersion() {
 	a.Version++
 	a.UpdatedAt = time.Now()
-}
-
-type Impact struct {
-	Balance   string
-	Operation string
-	Amount    decimal.Decimal
-	Rules     []string
 }
 
 var rules = map[string]func(*Account, decimal.Decimal) error{
