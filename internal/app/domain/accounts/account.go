@@ -1,36 +1,11 @@
 package accounts
 
 import (
-	"balances/internal/entries"
-	"database/sql/driver"
-	"encoding/json"
-	"errors"
-	"fmt"
+	"balances/internal/app/domain/commons"
 	"time"
 
 	"github.com/shopspring/decimal"
 )
-
-func init() {
-	decimal.MarshalJSONWithoutQuotes = true
-}
-
-type DecimalMap map[string]decimal.Decimal
-
-func (d DecimalMap) Value() (driver.Value, error) {
-	return json.Marshal(d)
-}
-
-func (d *DecimalMap) Scan(src interface{}) error {
-	switch data := src.(type) {
-	case []byte:
-		return json.Unmarshal(data, d)
-	case string:
-		return json.Unmarshal([]byte(data), d)
-	default:
-		return fmt.Errorf("unsupported type: %T", src)
-	}
-}
 
 type Status string
 
@@ -57,14 +32,29 @@ const (
 )
 
 type Account struct {
-	AccountID int64      `json:"account_id,omitempty"`
-	TenantID  string     `json:"tenant_id,omitempty"`
-	Limits    DecimalMap `json:"limits,omitempty"`
-	Balances  DecimalMap `json:"balances,omitempty"`
-	CreatedAt time.Time  `json:"created_at,omitempty"`
-	UpdatedAt time.Time  `json:"updated_at,omitempty"`
-	Status    Status     `json:"status,omitempty"`
-	Version   int64      `json:"version,omitempty"`
+	AccountID int64              `json:"account_id,omitempty"`
+	OrgID     string             `json:"tenant_id,omitempty"`
+	Limits    commons.DecimalMap `json:"limits,omitempty"`
+	Balances  commons.DecimalMap `json:"balances,omitempty"`
+	CreatedAt time.Time          `json:"created_at,omitempty"`
+	UpdatedAt time.Time          `json:"updated_at,omitempty"`
+	Status    Status             `json:"status,omitempty"`
+	Version   int64              `json:"version,omitempty"`
+}
+
+type Entry struct {
+	TrackingID string    `json:"tracking_id" validate:"required"`
+	AccountID  int64     `json:"account_id" validate:"required"`
+	OrgID      string    `json:"tenant_id" validate:"required"`
+	Impacts    []Impact  `json:"impacts" validate:"required"`
+	CreatedAt  time.Time `json:"created_at" validate:"required"`
+}
+
+type Impact struct {
+	Balance   string          `json:"balance" validate:"required"`
+	Operation string          `json:"operation" validate:"required"`
+	Amount    decimal.Decimal `json:"amount" validate:"required"`
+	Rules     []string        `json:"rules,omitempty"`
 }
 
 func (a *Account) ChangeStatus(status Status) {
@@ -74,7 +64,7 @@ func (a *Account) ChangeStatus(status Status) {
 
 func (a *Account) ChangeLimit(limit string, value decimal.Decimal) error {
 	if a.Status == Inative {
-		return ErrAccountDisabled
+		return ErrAccountDisabled{}
 	}
 	if err := limits[limit](a, value); err != nil {
 		return err
@@ -84,15 +74,15 @@ func (a *Account) ChangeLimit(limit string, value decimal.Decimal) error {
 	return nil
 }
 
-func (a *Account) ChangeBalances(impacts []entries.Impact) error {
+func (a *Account) ChangeBalances(impacts []Impact) error {
 	for _, i := range impacts {
 		for _, r := range i.Rules {
 			if err := rules[r](a, i.Amount); err != nil {
-				return fmt.Errorf("Validation: %v", err)
+				return err
 			}
 		}
 		if err := Operations[i.Operation](a, i.Balance, i.Amount); err != nil {
-			return fmt.Errorf("Validation: %v", err)
+			return err
 		}
 	}
 	a.IncreaseVersion()
@@ -112,21 +102,21 @@ var rules = map[string]func(*Account, decimal.Decimal) error{
 
 func validateDebitAvailableBalance(a *Account, amount decimal.Decimal) error {
 	if a.Balances[AvailableBalance].LessThan(amount) {
-		return ErrInsuficientBalance
+		return ErrInsuficientBalance{}
 	}
 	return nil
 }
 
 func validateDebitSavingsBalance(a *Account, amount decimal.Decimal) error {
 	if a.Balances[SavingsBalance].LessThan(amount) {
-		return ErrInsuficientBalance
+		return ErrInsuficientBalance{}
 	}
 	return nil
 }
 
 func validateDebitBlockedBalance(a *Account, amount decimal.Decimal) error {
 	if a.Balances[BlockedBalance].LessThan(amount) {
-		return ErrInsuficientBalance
+		return ErrInsuficientBalance{}
 	}
 	return nil
 }
@@ -138,7 +128,7 @@ var Operations = map[string]func(a *Account, balance string, amount decimal.Deci
 
 func credit(a *Account, balance string, amount decimal.Decimal) error {
 	if a.Status != Active && a.Status != OnlyCredit {
-		return errors.New("operation invalid")
+		return ErrValidateOperation{Msg: "operation invalid"}
 	}
 	a.Balances[balance] = a.Balances[balance].Add(amount)
 	return nil
@@ -146,7 +136,7 @@ func credit(a *Account, balance string, amount decimal.Decimal) error {
 
 func debit(a *Account, balance string, amount decimal.Decimal) error {
 	if a.Status != Active && a.Status != OnlyDebit {
-		return errors.New("operation invalid")
+		return ErrValidateOperation{Msg: "operation invalid"}
 	}
 	a.Balances[balance] = a.Balances[balance].Sub(amount)
 	return nil
@@ -160,14 +150,14 @@ var limits = map[string]func(a *Account, newValue decimal.Decimal) error{
 
 func validateChangeMaxLimit(a *Account, newValue decimal.Decimal) error {
 	if a.Limits[TotalLimit].GreaterThan(newValue) {
-		return errors.New("new limit can not less than total limit")
+		return ErrValidateLimit{Msg: "new limit can not less than total limit"}
 	}
 	return nil
 }
 
 func validateChangeTotalLimit(a *Account, newValue decimal.Decimal) error {
 	if a.Limits[MaxLimit].LessThan(newValue) {
-		return errors.New("new limit can not great than max limit")
+		return ErrValidateLimit{Msg: "new limit can not great than max limit"}
 	}
 	return nil
 }

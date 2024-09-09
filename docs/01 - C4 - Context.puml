@@ -1,0 +1,20 @@
+@startuml C4 - Context Diagram 
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!includeurl ICONURL/devicons/go.puml
+
+AddRelTag("async", $lineStyle = DashedLine())
+SHOW_PERSON_PORTRAIT()
+
+Person_Ext(bancos, "Agentes Financeiros", "Cliente externo que irá consulta as transações realizadas pelo sistema de pagamentos")
+System_Ext(contas, "Sistema de Contas", "Sistema que gerencia os dados cadastrais da conta do cliente")
+
+System(saldos, "Sistema de transações de débito e crédito", "Sistema responsável por gerenciar os saldos")
+
+Rel(bancos, contas, "Solicita a abertura de uma conta", )
+Rel(bancos, saldos, "Solicita uma transação de Debito ou Credito", "JSON")
+Rel(bancos, saldos, "Consulta os dados das transações processadas", "JSON")
+Rel(saldos, contas, "Consome dados das contas abertas", "JSON")
+
+@enduml

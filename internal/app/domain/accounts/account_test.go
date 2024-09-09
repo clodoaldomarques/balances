@@ -1,7 +1,6 @@
 package accounts
 
 import (
-	"balances/internal/entries"
 	"testing"
 	"time"
 
@@ -155,7 +154,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 	tests := []struct {
 		name  string
 		setup func() Account
-		args  func() []entries.Impact
+		args  func() []Impact
 		want  func(t *testing.T, a Account, e error)
 	}{
 		{
@@ -163,8 +162,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "available_balance",
 						Operation: "CREDIT",
@@ -184,8 +183,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "savings_balance",
 						Operation: "CREDIT",
@@ -205,8 +204,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "CREDIT",
@@ -226,8 +225,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "available_balance",
 						Operation: "DEBIT",
@@ -247,8 +246,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "savings_balance",
 						Operation: "DEBIT",
@@ -268,8 +267,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "DEBIT",
@@ -289,8 +288,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "available_balance",
 						Operation: "DEBIT",
@@ -317,8 +316,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "available_balance",
 						Operation: "DEBIT",
@@ -329,7 +328,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "Validation: insuficient balance", e.Error())
+				assert.Equal(t, "insuficient balance", e.Error())
 
 			},
 		},
@@ -338,8 +337,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "savings_balance",
 						Operation: "DEBIT",
@@ -350,7 +349,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "Validation: insuficient balance", e.Error())
+				assert.Equal(t, "insuficient balance", e.Error())
 
 			},
 		},
@@ -359,8 +358,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			setup: func() Account {
 				return buildAccount()
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "DEBIT",
@@ -371,7 +370,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "Validation: insuficient balance", e.Error())
+				assert.Equal(t, "insuficient balance", e.Error())
 
 			},
 		},
@@ -382,8 +381,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 				a.ChangeStatus(OnlyCredit)
 				return a
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "DEBIT",
@@ -394,7 +393,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "Validation: operation invalid", e.Error())
+				assert.Equal(t, "operation invalid", e.Error())
 
 			},
 		},
@@ -405,8 +404,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 				a.ChangeStatus(OnlyDebit)
 				return a
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "CREDIT",
@@ -417,7 +416,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "Validation: operation invalid", e.Error())
+				assert.Equal(t, "operation invalid", e.Error())
 
 			},
 		},
@@ -428,8 +427,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 				a.ChangeStatus(Inative)
 				return a
 			},
-			args: func() []entries.Impact {
-				return []entries.Impact{
+			args: func() []Impact {
+				return []Impact{
 					{
 						Balance:   "blocked_balance",
 						Operation: "CREDIT",
@@ -440,7 +439,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "Validation: operation invalid", e.Error())
+				assert.Equal(t, "operation invalid", e.Error())
 
 			},
 		},
@@ -456,8 +455,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 
 func buildAccount() Account {
 	return Account{
-		AccountID: 23052013,
-		TenantID:  "TN-12345678",
+		AccountID: int64(23052013),
+		OrgID:     "TN-12345678",
 		Limits: map[string]decimal.Decimal{
 			MaxLimit:       decimal.NewFromInt(100),
 			TotalLimit:     decimal.NewFromInt(100),
