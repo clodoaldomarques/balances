@@ -76,6 +76,9 @@ func (a *Account) ChangeLimit(limit string, value decimal.Decimal) error {
 
 func (a *Account) ChangeBalances(impacts []Impact) error {
 	for _, i := range impacts {
+		if i.Operation == "CREDIT" && len(i.Rules) > 0 {
+			return ErrValidateOperation{Msg: "rules don't need for credit operation"}
+		}
 		for _, r := range i.Rules {
 			if err := rules[r](a, i.Amount); err != nil {
 				return err

@@ -5,8 +5,10 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
+	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 )
@@ -236,5 +238,116 @@ func TestService_UpdateAccountStatus(t *testing.T) {
 			accID, status := tt.args()
 			tt.want(t, s.UpdateAccountStatus(context.Background(), accID, status))
 		})
+	}
+}
+
+func TestService_ProcessEntry(t *testing.T) {
+	tests := []struct {
+		name  string
+		setup func(ctrl *gomock.Controller) *Service
+		args  func() Entry
+		want  func(t *testing.T, e error)
+	}{
+		{
+			name: "when process credit entry with sucess",
+			setup: func(ctrl *gomock.Controller) *Service {
+				rep := NewMockRepository(ctrl)
+				acc := buildAccount()
+				rep.EXPECT().RetrieveAccountByID(gomock.Any(), int64(230513)).Return(acc, nil).Times(1)
+				rep.EXPECT().SaveEntryAndUpdateAccount(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).Times(1)
+				return NewService(rep)
+			},
+			args: func() Entry {
+				return buildEntry(decimal.NewFromInt(10))
+			},
+			want: func(t *testing.T, e error) {
+				assert.Nil(t, e)
+			},
+		},
+		{
+			name: "when account not found",
+			setup: func(ctrl *gomock.Controller) *Service {
+				rep := NewMockRepository(ctrl)
+				acc := Account{}
+				rep.EXPECT().RetrieveAccountByID(gomock.Any(), int64(230513)).Return(acc, errors.New("account not found")).Times(1)
+				return NewService(rep)
+			},
+			args: func() Entry {
+				return buildEntry(decimal.NewFromInt(10))
+			},
+			want: func(t *testing.T, e error) {
+				assert.NotNil(t, e)
+				assert.Equal(t, "account not found", e.Error())
+			},
+		},
+		{
+			name: "when error on update account",
+			setup: func(ctrl *gomock.Controller) *Service {
+				rep := NewMockRepository(ctrl)
+				acc := buildAccount()
+				rep.EXPECT().RetrieveAccountByID(gomock.Any(), int64(230513)).Return(acc, nil).Times(1)
+				rep.EXPECT().SaveEntryAndUpdateAccount(gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("illegal operation")).Times(1)
+				return NewService(rep)
+			},
+			args: func() Entry {
+				return buildEntry(decimal.NewFromInt(10))
+			},
+			want: func(t *testing.T, e error) {
+				assert.NotNil(t, e)
+				assert.Equal(t, "illegal operation", e.Error())
+			},
+		},
+		{
+			name: "when error on insuficient balance",
+			setup: func(ctrl *gomock.Controller) *Service {
+				rep := NewMockRepository(ctrl)
+				acc := buildAccount()
+				rep.EXPECT().RetrieveAccountByID(gomock.Any(), int64(230513)).Return(acc, nil).Times(1)
+				return NewService(rep)
+			},
+			args: func() Entry {
+				return buildEntry(decimal.NewFromInt(1000))
+			},
+			want: func(t *testing.T, e error) {
+				assert.NotNil(t, e)
+				assert.Equal(t, "insuficient balance", e.Error())
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			s := tt.setup(ctrl)
+			tt.want(t, s.ProcessEntry(context.Background(), tt.args()))
+		})
+	}
+}
+
+func buildEntry(amount decimal.Decimal) Entry {
+	return Entry{
+		TrackingID: uuid.NewString(),
+		AccountID:  int64(230513),
+		OrgID:      "TN-12345678",
+		Impacts: []Impact{
+			{
+				Balance:   "available_balance",
+				Operation: "DEBIT",
+				Amount:    amount,
+				Rules:     []string{"ConsiderAvailableBalance"},
+			},
+			{
+				Balance:   "savings_balance",
+				Operation: "DEBIT",
+				Amount:    amount,
+				Rules:     []string{"ConsiderSavingsBalance"},
+			},
+			{
+				Balance:   "blocked_balance",
+				Operation: "DEBIT",
+				Amount:    amount,
+				Rules:     []string{"ConsiderBlockedBalance"},
+			},
+		},
+		CreatedAt: time.Now(),
 	}
 }

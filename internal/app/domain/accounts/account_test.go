@@ -443,6 +443,27 @@ func TestAccount_ChangeBalances(t *testing.T) {
 
 			},
 		},
+		{
+			name: "error when credit operation with rules",
+			setup: func() Account {
+				return buildAccount()
+			},
+			args: func() []Impact {
+				return []Impact{
+					{
+						Balance:   "blocked_balance",
+						Operation: "CREDIT",
+						Amount:    decimal.NewFromInt(50),
+						Rules:     []string{"ConsiderAvailableBalance"},
+					},
+				}
+			},
+			want: func(t *testing.T, a Account, e error) {
+				assert.Error(t, e)
+				assert.Equal(t, "rules don't need for credit operation", e.Error())
+
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
