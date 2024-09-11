@@ -18,11 +18,11 @@ WORKDIR /
 COPY --from=build /balances-api /balances-api
 
 #mysql access
-ENV MYSQL_DB_HOST=192.168.49.2
-ENV MYSQL_DB_PORT=30306
-ENV MYSQL_DB_NOME=balances
-ENV MYSQL_DB_USUARIO=admin
-ENV MYSQL_DB_SENHA=b4l4nc3s
+ENV MYSQL_HOST=192.168.49.2
+ENV MYSQL_PORT=30306
+ENV MYSQL_DATABASE=balances
+ENV MYSQL_USER=admin
+ENV MYSQL_PASSWORD=b4l4nc3s
 
 #AWS 
 ENV AWS_ADDRESS="http://192.168.49.2:4566"
@@ -32,7 +32,7 @@ ENV AWS_ID="test"
 ENV AWS_SECRET="test"
 
 #SnS
-ENV CREATE_ACCOUNT_SNS_TOPIC="arn:aws:sns:us-east-1:000000000000:account-sns-topic"
+ENV BALANCES_SNS_TOPIC="arn:aws:sns:us-east-1:000000000000:balances-sns-topic"
 
 EXPOSE 5000
 
