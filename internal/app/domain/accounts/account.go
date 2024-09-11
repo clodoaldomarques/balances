@@ -31,6 +31,13 @@ const (
 	BlockedBalance   = "blocked_balance"
 )
 
+// considers
+const (
+	ConsiderAvailableBalance = "consider_available_balance"
+	ConsiderSavingsBalance   = "consider_savings_balance"
+	ConsiderBlockedBalance   = "Consider_blocked_balance"
+)
+
 type Account struct {
 	AccountID int64              `json:"account_id,omitempty"`
 	OrgID     string             `json:"tenant_id,omitempty"`
@@ -98,9 +105,9 @@ func (a *Account) IncreaseVersion() {
 }
 
 var rules = map[string]func(*Account, decimal.Decimal) error{
-	"ConsiderAvailableBalance": validateDebitAvailableBalance,
-	"ConsiderSavingsBalance":   validateDebitSavingsBalance,
-	"ConsiderBlockedBalance":   validateDebitBlockedBalance,
+	ConsiderAvailableBalance: validateDebitAvailableBalance,
+	ConsiderSavingsBalance:   validateDebitSavingsBalance,
+	ConsiderBlockedBalance:   validateDebitBlockedBalance,
 }
 
 func validateDebitAvailableBalance(a *Account, amount decimal.Decimal) error {

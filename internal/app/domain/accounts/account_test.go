@@ -231,7 +231,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 						Balance:   "available_balance",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(50),
-						Rules:     []string{"ConsiderAvailableBalance"},
+						Rules:     []string{"consider_available_balance"},
 					},
 				}
 			},
@@ -252,7 +252,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 						Balance:   "savings_balance",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(50),
-						Rules:     []string{"ConsiderSavingsBalance"},
+						Rules:     []string{"consider_savings_balance"},
 					},
 				}
 			},
@@ -273,7 +273,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 						Balance:   "blocked_balance",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(50),
-						Rules:     []string{"ConsiderBlockedBalance"},
+						Rules:     []string{ConsiderBlockedBalance},
 					},
 				}
 			},
@@ -294,7 +294,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 						Balance:   "available_balance",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(50),
-						Rules:     []string{"ConsiderAvailableBalance"},
+						Rules:     []string{ConsiderAvailableBalance},
 					},
 					{
 						Balance:   "blocked_balance",
@@ -322,7 +322,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 						Balance:   "available_balance",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(200),
-						Rules:     []string{"ConsiderAvailableBalance"},
+						Rules:     []string{ConsiderAvailableBalance},
 					},
 				}
 			},
@@ -343,7 +343,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 						Balance:   "savings_balance",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(200),
-						Rules:     []string{"ConsiderSavingsBalance"},
+						Rules:     []string{ConsiderSavingsBalance},
 					},
 				}
 			},
@@ -364,7 +364,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 						Balance:   "blocked_balance",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(200),
-						Rules:     []string{"ConsiderBlockedBalance"},
+						Rules:     []string{ConsiderBlockedBalance},
 					},
 				}
 			},
@@ -387,7 +387,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 						Balance:   "blocked_balance",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(50),
-						Rules:     []string{"ConsiderBlockedBalance"},
+						Rules:     []string{ConsiderBlockedBalance},
 					},
 				}
 			},
@@ -454,7 +454,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 						Balance:   "blocked_balance",
 						Operation: "CREDIT",
 						Amount:    decimal.NewFromInt(50),
-						Rules:     []string{"ConsiderAvailableBalance"},
+						Rules:     []string{ConsiderAvailableBalance},
 					},
 				}
 			},
