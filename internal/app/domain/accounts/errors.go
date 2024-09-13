@@ -7,48 +7,48 @@ import (
 )
 
 type ErrInsuficientBalance struct {
-	Msg string
+	msg string
 }
 
 func (e ErrInsuficientBalance) Error() string {
-	if e.Msg != "" {
-		return e.Msg
+	if e.msg != "" {
+		return e.msg
 	}
 	return "insuficient balance"
 }
 
 type ErrAccountDisabled struct {
-	Msg string
+	msg string
 }
 
 func (e ErrAccountDisabled) Error() string {
-	if e.Msg != "" {
-		return e.Msg
+	if e.msg != "" {
+		return e.msg
 	}
 	return "this Account is disabled for this operation"
 }
 
 type ErrValidateLimit struct {
-	Msg string
+	msg string
 }
 
 func (e ErrValidateLimit) Error() string {
-	if e.Msg != "" {
-		return e.Msg
+	if e.msg != "" {
+		return e.msg
 	}
 	return "this is an invalid operation"
 }
 
 type ErrValidateOperation struct {
-	Msg       string
+	msg       string
 	Operation string
 	Balance   string
 	Amount    decimal.Decimal
 }
 
 func (e ErrValidateOperation) Error() string {
-	if e.Msg != "" {
-		return e.Msg
+	if e.msg != "" {
+		return e.msg
 	}
 	return fmt.Sprintf("invalid operation: %s, balance: %s, amount: %d", e.Operation, e.Balance, e.Amount)
 }

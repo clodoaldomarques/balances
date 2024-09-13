@@ -43,7 +43,7 @@ func TestService_CreateNewAccount(t *testing.T) {
 		name  string
 		setup func(ctrl *gomock.Controller) *Service
 		args  func() Account
-		want  func(t *testing.T, e error)
+		want  func(t *testing.T, acc Account, e error)
 	}{
 		{
 			name: "when create account with sucess",
@@ -55,7 +55,7 @@ func TestService_CreateNewAccount(t *testing.T) {
 			args: func() Account {
 				return buildAccount()
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.Nil(t, e)
 			},
 		},
@@ -69,7 +69,7 @@ func TestService_CreateNewAccount(t *testing.T) {
 			args: func() Account {
 				return buildAccount()
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.NotNil(t, e)
 			},
 		},
@@ -78,7 +78,8 @@ func TestService_CreateNewAccount(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			s := tt.setup(ctrl)
-			tt.want(t, s.CreateNewAccount(context.Background(), tt.args()))
+			acc, e := s.CreateNewAccount(context.Background(), tt.args())
+			tt.want(t, acc, e)
 		})
 	}
 }
@@ -88,7 +89,7 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 		name  string
 		setup func(ctrl *gomock.Controller) *Service
 		args  func() (int64, commons.DecimalMap)
-		want  func(t *testing.T, e error)
+		want  func(t *testing.T, acc Account, e error)
 	}{
 		{
 			name: "when update a limit with sucess",
@@ -104,7 +105,7 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 					MaxLimit: decimal.NewFromInt(150),
 				}
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.Nil(t, e)
 			},
 		},
@@ -121,7 +122,7 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 					MaxLimit: decimal.NewFromInt(150),
 				}
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.NotNil(t, e)
 				assert.Equal(t, "Account not found", e.Error())
 			},
@@ -139,7 +140,7 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 					TotalLimit: decimal.NewFromInt(150),
 				}
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.NotNil(t, e)
 				assert.Equal(t, "new limit can not great than max limit", e.Error())
 			},
@@ -158,7 +159,7 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 					MaxLimit: decimal.NewFromInt(150),
 				}
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.NotNil(t, e)
 				assert.Equal(t, "error on update account", e.Error())
 			},
@@ -169,7 +170,8 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			s := tt.setup(ctrl)
 			accID, limits := tt.args()
-			tt.want(t, s.UpdateAccountLimits(context.Background(), accID, limits))
+			acc, e := s.UpdateAccountLimits(context.Background(), accID, limits)
+			tt.want(t, acc, e)
 		})
 	}
 }
@@ -179,7 +181,7 @@ func TestService_UpdateAccountStatus(t *testing.T) {
 		name  string
 		setup func(ctrl *gomock.Controller) *Service
 		args  func() (int64, Status)
-		want  func(t *testing.T, e error)
+		want  func(t *testing.T, acc Account, e error)
 	}{
 		{
 			name: "when disable account with sucess",
@@ -193,7 +195,7 @@ func TestService_UpdateAccountStatus(t *testing.T) {
 			args: func() (int64, Status) {
 				return int64(230513), Inative
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.Nil(t, e)
 			},
 		},
@@ -208,7 +210,7 @@ func TestService_UpdateAccountStatus(t *testing.T) {
 			args: func() (int64, Status) {
 				return int64(230513), Inative
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.NotNil(t, e)
 				assert.Equal(t, "account not found", e.Error())
 			},
@@ -225,7 +227,7 @@ func TestService_UpdateAccountStatus(t *testing.T) {
 			args: func() (int64, Status) {
 				return int64(230513), Inative
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.NotNil(t, e)
 				assert.Equal(t, "account update failed", e.Error())
 			},
@@ -236,7 +238,8 @@ func TestService_UpdateAccountStatus(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			s := tt.setup(ctrl)
 			accID, status := tt.args()
-			tt.want(t, s.UpdateAccountStatus(context.Background(), accID, status))
+			acc, e := s.UpdateAccountStatus(context.Background(), accID, status)
+			tt.want(t, acc, e)
 		})
 	}
 }
@@ -246,7 +249,7 @@ func TestService_ProcessEntry(t *testing.T) {
 		name  string
 		setup func(ctrl *gomock.Controller) *Service
 		args  func() Entry
-		want  func(t *testing.T, e error)
+		want  func(t *testing.T, acc Account, e error)
 	}{
 		{
 			name: "when process credit entry with sucess",
@@ -260,7 +263,7 @@ func TestService_ProcessEntry(t *testing.T) {
 			args: func() Entry {
 				return buildEntry(decimal.NewFromInt(10))
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.Nil(t, e)
 			},
 		},
@@ -268,14 +271,13 @@ func TestService_ProcessEntry(t *testing.T) {
 			name: "when account not found",
 			setup: func(ctrl *gomock.Controller) *Service {
 				rep := NewMockRepository(ctrl)
-				acc := Account{}
-				rep.EXPECT().RetrieveAccountByID(gomock.Any(), int64(230513)).Return(acc, errors.New("account not found")).Times(1)
+				rep.EXPECT().RetrieveAccountByID(gomock.Any(), int64(230513)).Return(Account{}, errors.New("account not found")).Times(1)
 				return NewService(rep)
 			},
 			args: func() Entry {
 				return buildEntry(decimal.NewFromInt(10))
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.NotNil(t, e)
 				assert.Equal(t, "account not found", e.Error())
 			},
@@ -292,7 +294,7 @@ func TestService_ProcessEntry(t *testing.T) {
 			args: func() Entry {
 				return buildEntry(decimal.NewFromInt(10))
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.NotNil(t, e)
 				assert.Equal(t, "illegal operation", e.Error())
 			},
@@ -308,7 +310,7 @@ func TestService_ProcessEntry(t *testing.T) {
 			args: func() Entry {
 				return buildEntry(decimal.NewFromInt(1000))
 			},
-			want: func(t *testing.T, e error) {
+			want: func(t *testing.T, acc Account, e error) {
 				assert.NotNil(t, e)
 				assert.Equal(t, "insuficient balance", e.Error())
 			},
@@ -318,7 +320,8 @@ func TestService_ProcessEntry(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			s := tt.setup(ctrl)
-			tt.want(t, s.ProcessEntry(context.Background(), tt.args()))
+			acc, e := s.ProcessEntry(context.Background(), tt.args())
+			tt.want(t, acc, e)
 		})
 	}
 }

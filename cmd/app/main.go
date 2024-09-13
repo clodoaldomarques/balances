@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"balances/internal/app/infra/rest/server"
+	"log"
+	"net/http"
+)
 
 func main() {
-	fmt.Println("Initial app")
+	e := server.New()
+
+	if err := e.Start(":8080"); err != http.ErrServerClosed {
+		log.Fatal(err)
+	}
 }

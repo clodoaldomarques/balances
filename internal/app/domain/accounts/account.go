@@ -35,12 +35,12 @@ const (
 const (
 	ConsiderAvailableBalance = "consider_available_balance"
 	ConsiderSavingsBalance   = "consider_savings_balance"
-	ConsiderBlockedBalance   = "Consider_blocked_balance"
+	ConsiderBlockedBalance   = "consider_blocked_balance"
 )
 
 type Account struct {
 	AccountID int64              `json:"account_id,omitempty"`
-	OrgID     string             `json:"tenant_id,omitempty"`
+	OrgID     string             `json:"org_id,omitempty"`
 	Limits    commons.DecimalMap `json:"limits,omitempty"`
 	Balances  commons.DecimalMap `json:"balances,omitempty"`
 	CreatedAt time.Time          `json:"created_at,omitempty"`
@@ -52,7 +52,7 @@ type Account struct {
 type Entry struct {
 	TrackingID string    `json:"tracking_id" validate:"required"`
 	AccountID  int64     `json:"account_id" validate:"required"`
-	OrgID      string    `json:"tenant_id" validate:"required"`
+	OrgID      string    `json:"org_id" validate:"required"`
 	Impacts    []Impact  `json:"impacts" validate:"required"`
 	CreatedAt  time.Time `json:"created_at" validate:"required"`
 }
@@ -84,7 +84,7 @@ func (a *Account) ChangeLimit(limit string, value decimal.Decimal) error {
 func (a *Account) ChangeBalances(impacts []Impact) error {
 	for _, i := range impacts {
 		if i.Operation == "CREDIT" && len(i.Rules) > 0 {
-			return ErrValidateOperation{Msg: "rules don't need for credit operation"}
+			return ErrValidateOperation{msg: "rules don't need for credit operation"}
 		}
 		for _, r := range i.Rules {
 			if err := rules[r](a, i.Amount); err != nil {
@@ -138,7 +138,7 @@ var Operations = map[string]func(a *Account, balance string, amount decimal.Deci
 
 func credit(a *Account, balance string, amount decimal.Decimal) error {
 	if a.Status != Active && a.Status != OnlyCredit {
-		return ErrValidateOperation{Msg: "operation invalid"}
+		return ErrValidateOperation{msg: "operation invalid"}
 	}
 	a.Balances[balance] = a.Balances[balance].Add(amount)
 	return nil
@@ -146,7 +146,7 @@ func credit(a *Account, balance string, amount decimal.Decimal) error {
 
 func debit(a *Account, balance string, amount decimal.Decimal) error {
 	if a.Status != Active && a.Status != OnlyDebit {
-		return ErrValidateOperation{Msg: "operation invalid"}
+		return ErrValidateOperation{msg: "operation invalid"}
 	}
 	a.Balances[balance] = a.Balances[balance].Sub(amount)
 	return nil
@@ -160,14 +160,14 @@ var limits = map[string]func(a *Account, newValue decimal.Decimal) error{
 
 func validateChangeMaxLimit(a *Account, newValue decimal.Decimal) error {
 	if a.Limits[TotalLimit].GreaterThan(newValue) {
-		return ErrValidateLimit{Msg: "new limit can not less than total limit"}
+		return ErrValidateLimit{msg: "new limit can not less than total limit"}
 	}
 	return nil
 }
 
 func validateChangeTotalLimit(a *Account, newValue decimal.Decimal) error {
 	if a.Limits[MaxLimit].LessThan(newValue) {
-		return ErrValidateLimit{Msg: "new limit can not great than max limit"}
+		return ErrValidateLimit{msg: "new limit can not great than max limit"}
 	}
 	return nil
 }
