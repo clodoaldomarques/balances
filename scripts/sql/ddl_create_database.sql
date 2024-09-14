@@ -1,6 +1,6 @@
 CREATE TABLE accounts(
     account_id bigint primary key,
-    tenant_id varchar(100) not null,
+    org_id varchar(100) not null,
     limits json not null,
     balances json not null,
     created_at timestamp default current_timestamp,
@@ -9,12 +9,10 @@ CREATE TABLE accounts(
     version bigint not null default 1
 );
 
-CREATE TABLE events (
+CREATE TABLE entries(
     tracking_id varchar(36) not null primary key,
-    event_type varchar(100) not null, 
     account_id bigint not null,
-    tenant_id varchar(100) not null,
+    org_id varchar(100) not null,
     impacts json not null,
-    balances json not null,
-    created_at timestamp default current_timestamp
-);
+    created_at timestamp default current_timestamp,
+)

@@ -11,6 +11,9 @@ import (
 
 func CreateNewAccount(c echo.Context) error {
 	ctx := c.Request().Context()
+	r := mysqldb.NewRepository(ctx)
+	defer r.Close()
+	s := accounts.NewService(r)
 
 	a := new(PostAccountRequest)
 	if err := c.Bind(a); err != nil {
@@ -19,8 +22,6 @@ func CreateNewAccount(c echo.Context) error {
 
 	acc := a.ToEntity()
 
-	r := mysqldb.NewRepository()
-	s := accounts.NewService(r)
 	newAcc, err := s.CreateNewAccount(ctx, acc)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -32,6 +33,10 @@ func CreateNewAccount(c echo.Context) error {
 
 func UpdateAccountLimits(c echo.Context) error {
 	ctx := c.Request().Context()
+	r := mysqldb.NewRepository(ctx)
+	defer r.Close()
+	s := accounts.NewService(r)
+
 	accID, err := strconv.ParseInt(c.Param("accountID"), 10, 64)
 	if err != nil {
 		return echo.ErrBadRequest
@@ -42,8 +47,6 @@ func UpdateAccountLimits(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	r := mysqldb.NewRepository()
-	s := accounts.NewService(r)
 	acc, err := s.UpdateAccountLimits(ctx, accID, a.Limits)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -56,6 +59,10 @@ func UpdateAccountLimits(c echo.Context) error {
 
 func UpdateAccountStatus(c echo.Context) error {
 	ctx := c.Request().Context()
+	r := mysqldb.NewRepository(ctx)
+	defer r.Close()
+	s := accounts.NewService(r)
+
 	accID, err := strconv.ParseInt(c.Param("accountID"), 10, 64)
 	if err != nil {
 		return echo.ErrBadRequest
@@ -66,8 +73,6 @@ func UpdateAccountStatus(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	r := mysqldb.NewRepository()
-	s := accounts.NewService(r)
 	acc, err := s.UpdateAccountStatus(ctx, accID, accounts.Status(a.Status))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -80,14 +85,15 @@ func UpdateAccountStatus(c echo.Context) error {
 
 func ProcessEntry(c echo.Context) error {
 	ctx := c.Request().Context()
+	r := mysqldb.NewRepository(ctx)
+	defer r.Close()
+	s := accounts.NewService(r)
 
 	e := new(PostEntryRequest)
 	if err := c.Bind(e); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	r := mysqldb.NewRepository()
-	s := accounts.NewService(r)
 	acc, err := s.ProcessEntry(ctx, e.ToEntity())
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())

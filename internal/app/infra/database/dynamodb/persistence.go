@@ -1,4 +1,4 @@
-package mysqldb
+package dynamodb
 
 import (
 	"balances/internal/app/domain/accounts"

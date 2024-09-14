@@ -34,17 +34,17 @@ func New(options ...Option) *Config {
 
 	c := &Config{
 		AppPort:         getInt("APP_PORT", 5000),
-		MySqlDBUser:     getString("MYSQL_DB_USER", "admin"),
-		MySqlDBPass:     getString("MYSQL_DB_PASS", "b4l4nc3s"),
-		MySqlDBHost:     getString("MYSQL_DB_HOST", "192.168.49.2"),
-		MySqlDBPort:     getString("MYSQL_DB_PORT", "30306"),
-		MysqlDBName:     getString("MYSQL_DB_NAME", "balances"),
+		MySqlDBUser:     getString("MYSQL_USER", "admin"),
+		MySqlDBPass:     getString("MYSQL_PASS", "b4l4nc3s"),
+		MySqlDBHost:     getString("MYSQL_HOST", "192.168.49.2"),
+		MySqlDBPort:     getString("MYSQL_PORT", "30306"),
+		MysqlDBName:     getString("MYSQL_NAME", "balances"),
 		AwsAddress:      getString("AWS_ADDRESS", "192.168.49.2"),
 		AwsRegion:       getString("AWS_REGION", "us-east-1"),
 		AwsProfile:      getString("AWS_PROFILE", "localstack"),
 		AwsID:           getString("AWS_ID", "1.0.0"),
 		AwsSecret:       getString("AWS_SECRET", "test"),
-		SnsAccountTopic: getString("ACCOUNT_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:account-sns-topic"),
+		SnsAccountTopic: getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:account-sns-topic"),
 	}
 
 	for _, opt := range options {

@@ -4,6 +4,8 @@ import (
 	"balances/internal/app/domain/accounts"
 	"balances/internal/app/domain/commons"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type PostAccountRequest struct {
@@ -80,10 +82,10 @@ func AccountToPutAccountResponse(acc accounts.Account) PutAccountResponse {
 }
 
 type PostEntryRequest struct {
-	TrackingID string            `json:"tracking_id" validate:"required"`
-	AccountID  int64             `json:"account_id" validate:"required"`
-	OrgID      string            `json:"org_id" validate:"required"`
-	Impacts    []accounts.Impact `json:"impacts" validate:"required"`
+	TrackingID string              `json:"tracking_id" validate:"required"`
+	AccountID  int64               `json:"account_id" validate:"required"`
+	OrgID      string              `json:"org_id" validate:"required"`
+	Impacts    []PostImpactRequest `json:"impacts" validate:"required"`
 }
 
 func (p PostEntryRequest) ToEntity() accounts.Entry {
@@ -91,7 +93,28 @@ func (p PostEntryRequest) ToEntity() accounts.Entry {
 		TrackingID: p.TrackingID,
 		AccountID:  p.AccountID,
 		OrgID:      p.OrgID,
-		Impacts:    p.Impacts,
+		Impacts:    parseToEntity(p.Impacts),
 		CreatedAt:  time.Now(),
 	}
+}
+
+type PostImpactRequest struct {
+	Balance   string          `json:"balance" validate:"required"`
+	Operation string          `json:"operation" validate:"required"`
+	Amount    decimal.Decimal `json:"amount" validate:"required"`
+	Rules     []string        `json:"rules,omitempty"`
+}
+
+func parseToEntity(impactsRequest []PostImpactRequest) []accounts.Impact {
+	impacts := make([]accounts.Impact, 0)
+	for _, r := range impactsRequest {
+		impact := accounts.Impact{
+			Balance:   r.Balance,
+			Operation: r.Operation,
+			Amount:    r.Amount,
+			Rules:     r.Rules,
+		}
+		impacts = append(impacts, impact)
+	}
+	return impacts
 }

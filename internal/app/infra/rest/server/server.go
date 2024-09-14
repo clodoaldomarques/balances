@@ -7,13 +7,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type Server struct {
+	http *echo.Echo
+}
+
 func New() *echo.Echo {
 	e := echo.New()
-	fillRoutes(e)
+	routes(e)
 	return e
 }
 
-func fillRoutes(e *echo.Echo) {
+func routes(e *echo.Echo) {
 
 	// health check
 	e.GET("/", HealthCheck)

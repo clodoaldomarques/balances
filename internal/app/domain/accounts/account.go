@@ -39,29 +39,29 @@ const (
 )
 
 type Account struct {
-	AccountID int64              `json:"account_id,omitempty"`
-	OrgID     string             `json:"org_id,omitempty"`
-	Limits    commons.DecimalMap `json:"limits,omitempty"`
-	Balances  commons.DecimalMap `json:"balances,omitempty"`
-	CreatedAt time.Time          `json:"created_at,omitempty"`
-	UpdatedAt time.Time          `json:"updated_at,omitempty"`
-	Status    Status             `json:"status,omitempty"`
-	Version   int64              `json:"version,omitempty"`
+	AccountID int64
+	OrgID     string
+	Limits    commons.DecimalMap
+	Balances  commons.DecimalMap
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Status    Status
+	Version   int64
 }
 
 type Entry struct {
-	TrackingID string    `json:"tracking_id" validate:"required"`
-	AccountID  int64     `json:"account_id" validate:"required"`
-	OrgID      string    `json:"org_id" validate:"required"`
-	Impacts    []Impact  `json:"impacts" validate:"required"`
-	CreatedAt  time.Time `json:"created_at" validate:"required"`
+	TrackingID string
+	AccountID  int64
+	OrgID      string
+	Impacts    []Impact
+	CreatedAt  time.Time
 }
 
 type Impact struct {
-	Balance   string          `json:"balance" validate:"required"`
-	Operation string          `json:"operation" validate:"required"`
-	Amount    decimal.Decimal `json:"amount" validate:"required"`
-	Rules     []string        `json:"rules,omitempty"`
+	Balance   string
+	Operation string
+	Amount    decimal.Decimal
+	Rules     []string
 }
 
 func (a *Account) ChangeStatus(status Status) {
