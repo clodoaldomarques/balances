@@ -393,7 +393,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "operation invalid", e.Error())
+				assert.Equal(t, "invalid operation: DEBIT, balance: blocked_balance, amount: 50", e.Error())
 
 			},
 		},
@@ -416,7 +416,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "operation invalid", e.Error())
+				assert.Equal(t, "invalid operation: CREDIT, balance: blocked_balance, amount: 50", e.Error())
 
 			},
 		},
@@ -439,7 +439,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "operation invalid", e.Error())
+				assert.Equal(t, "invalid operation: CREDIT, balance: blocked_balance, amount: 50", e.Error())
 
 			},
 		},
@@ -460,7 +460,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "rules don't need for credit operation", e.Error())
+				assert.Equal(t, "invalid operation: CREDIT, balance: blocked_balance, amount: 50", e.Error())
 
 			},
 		},

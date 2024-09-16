@@ -4,6 +4,7 @@ import (
 	"balances/internal/app/infra/rest/accounts"
 	"net/http"
 
+	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 )
 
@@ -18,6 +19,8 @@ func New() *echo.Echo {
 }
 
 func routes(e *echo.Echo) {
+
+	e.Validator = &CustomValidator{validator: validator.New()}
 
 	// health check
 	e.GET("/", HealthCheck)
@@ -34,4 +37,15 @@ func HealthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"data": "Server is up and running",
 	})
+}
+
+type CustomValidator struct {
+	validator *validator.Validate
+}
+
+func (cv *CustomValidator) Validate(i interface{}) error {
+	if err := cv.validator.Struct(i); err != nil {
+		return err
+	}
+	return nil
 }

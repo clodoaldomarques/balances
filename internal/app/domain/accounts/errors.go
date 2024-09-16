@@ -40,15 +40,11 @@ func (e ErrValidateLimit) Error() string {
 }
 
 type ErrValidateOperation struct {
-	msg       string
-	Operation string
-	Balance   string
-	Amount    decimal.Decimal
+	operation string
+	balance   string
+	amount    decimal.Decimal
 }
 
 func (e ErrValidateOperation) Error() string {
-	if e.msg != "" {
-		return e.msg
-	}
-	return fmt.Sprintf("invalid operation: %s, balance: %s, amount: %d", e.Operation, e.Balance, e.Amount)
+	return fmt.Sprintf("invalid operation: %s, balance: %s, amount: %s", e.operation, e.balance, e.amount)
 }

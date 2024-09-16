@@ -58,6 +58,11 @@ func (s Service) UpdateAccountStatus(ctx context.Context, accountID int64, statu
 }
 
 func (s Service) ProcessEntry(ctx context.Context, e Entry) (Account, error) {
+
+	if err := e.Validate(); err != nil {
+		return Account{}, err
+	}
+
 	acc, err := s.rep.RetrieveAccountByID(ctx, e.AccountID)
 	if err != nil {
 		return Account{}, err

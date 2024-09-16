@@ -20,6 +20,10 @@ func CreateNewAccount(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
+	if err := c.Validate(a); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
 	acc := a.ToEntity()
 
 	newAcc, err := s.CreateNewAccount(ctx, acc)
@@ -45,6 +49,10 @@ func UpdateAccountLimits(c echo.Context) error {
 	a := new(PutAccountRequest)
 	if err := c.Bind(a); err != nil {
 		return echo.ErrBadRequest
+	}
+
+	if err := c.Validate(a); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	acc, err := s.UpdateAccountLimits(ctx, accID, a.Limits)
@@ -73,6 +81,10 @@ func UpdateAccountStatus(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
+	if err := c.Validate(a); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
 	acc, err := s.UpdateAccountStatus(ctx, accID, accounts.Status(a.Status))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -92,6 +104,10 @@ func ProcessEntry(c echo.Context) error {
 	e := new(PostEntryRequest)
 	if err := c.Bind(e); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	if err := c.Validate(e); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	acc, err := s.ProcessEntry(ctx, e.ToEntity())
