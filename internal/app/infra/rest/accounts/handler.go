@@ -46,7 +46,7 @@ func UpdateAccountLimits(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	a := new(PutAccountRequest)
+	a := new(PutAccountLimitsRequest)
 	if err := c.Bind(a); err != nil {
 		return echo.ErrBadRequest
 	}
@@ -76,7 +76,7 @@ func UpdateAccountStatus(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	a := new(PutAccountRequest)
+	a := new(PutAccountStatusRequest)
 	if err := c.Bind(a); err != nil {
 		return echo.ErrBadRequest
 	}
@@ -109,7 +109,6 @@ func ProcessEntry(c echo.Context) error {
 	if err := c.Validate(e); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-
 
 	acc, err := s.ProcessEntry(ctx, e.ToEntity())
 	if err != nil {

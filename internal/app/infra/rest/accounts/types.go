@@ -44,6 +44,9 @@ func (p PostAccountRequest) ToEntity() accounts.Account {
 }
 
 func (p PostAccountRequest) Validate() error {
+	if len(p.Limits) == 0 {
+		return fmt.Errorf("limits can not be empty")
+	}
 	for k, v := range p.Limits {
 		if !slices.Contains(validLimits, k) {
 			return errors.New("invalid limit")
@@ -51,6 +54,9 @@ func (p PostAccountRequest) Validate() error {
 		if v.LessThan(decimal.Zero) {
 			return fmt.Errorf("limit %s can not less then zero", k)
 		}
+	}
+	if len(p.Balances) == 0 {
+		return fmt.Errorf("balances can not be empty")
 	}
 	for k, v := range p.Balances {
 		if !slices.Contains(validBalances, k) {
@@ -87,12 +93,14 @@ func AccountToPostAccountResponse(acc accounts.Account) PostAccountResponse {
 	}
 }
 
-type PutAccountRequest struct {
-	Limits commons.DecimalMap `json:"limits,omitempty"`
-	Status string             `json:"status,omitempty"`
+type PutAccountLimitsRequest struct {
+	Limits commons.DecimalMap `json:"limits" validate:"required"`
 }
 
-func (p PutAccountRequest) Validate() error {
+func (p PutAccountLimitsRequest) Validate() error {
+	if len(p.Limits) == 0 {
+		return fmt.Errorf("limits can not be empty")
+	}
 	for k, v := range p.Limits {
 		if !slices.Contains(validLimits, k) {
 			return fmt.Errorf("invalid limit: %s", k)
@@ -101,10 +109,16 @@ func (p PutAccountRequest) Validate() error {
 			return fmt.Errorf("limit %s can not less then zero", k)
 		}
 	}
-	if p.Status != "" {
-		if !slices.Contains(validStatus, p.Status) {
-			return fmt.Errorf("invalid status: %s", p.Status)
-		}
+	return nil
+}
+
+type PutAccountStatusRequest struct {
+	Status string `json:"status" validate:"required"`
+}
+
+func (p PutAccountStatusRequest) Validate() error {
+	if !slices.Contains(validStatus, p.Status) {
+		return fmt.Errorf("invalid status: %s", p.Status)
 	}
 	return nil
 }
