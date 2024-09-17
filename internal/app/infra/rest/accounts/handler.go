@@ -110,6 +110,7 @@ func ProcessEntry(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
+
 	acc, err := s.ProcessEntry(ctx, e.ToEntity())
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())

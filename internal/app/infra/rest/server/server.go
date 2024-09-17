@@ -47,5 +47,12 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 	if err := cv.validator.Struct(i); err != nil {
 		return err
 	}
+	r, ok := i.(accounts.EntityRequest)
+	if !ok {
+		return nil
+	}
+	if err := r.Validate(); err != nil {
+		return err
+	}
 	return nil
 }

@@ -69,33 +69,6 @@ type Impact struct {
 	Rules     []string
 }
 
-func (e Entry) Validate() error {
-	for _, i := range e.Impacts {
-		if err := i.Validate(); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (i Impact) Validate() error {
-	if i.Balance != AvailableBalance && i.Balance != SavingsBalance && i.Balance != BlockedBalance {
-		return ErrValidateOperation{
-			operation: i.Operation,
-			balance:   i.Balance,
-			amount:    i.Amount,
-		}
-	}
-	if i.Operation != Credit && i.Operation != Debit {
-		return ErrValidateOperation{
-			operation: "",
-			balance:   AvailableBalance,
-			amount:    decimal.Decimal{},
-		}
-	}
-	return nil
-}
-
 func (a *Account) ChangeStatus(status Status) {
 	a.Status = status
 	a.IncreaseVersion()
