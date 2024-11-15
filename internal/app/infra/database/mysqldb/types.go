@@ -5,6 +5,8 @@ import (
 	"balances/internal/app/domain/commons"
 	"encoding/json"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type AccountTable struct {
@@ -52,8 +54,37 @@ type EntryTable struct {
 	CreatedAt  time.Time `json:"created_at" validate:"required"`
 }
 
+type ImpactTable struct {
+	Balance   string          `json:"balance" validate:"required"`
+	Operation string          `json:"operation" validate:"required"`
+	Amount    decimal.Decimal `json:"amount" validate:"required"`
+	Rules     []string        `json:"rules,omitempty"`
+}
+
+func impactToTable(impacts []accounts.Impact) []ImpactTable {
+	impactsTable := make([]ImpactTable, 0, len(impacts))
+	for _, i := range impacts {
+		it := ImpactTable{
+			Balance:   i.Balance,
+			Operation: i.Operation,
+			Amount:    i.Amount,
+			Rules:     i.Rules,
+		}
+		impactsTable = append(impactsTable, it)
+	}
+	return impactsTable
+}
+
+func toByte(impactsTable []ImpactTable) ([]byte, error) {
+	impacts, err := json.Marshal(impactsTable)
+	if err != nil {
+		return nil, err
+	}
+	return impacts, nil
+}
+
 func EntryToTable(e accounts.Entry) (EntryTable, error) {
-	impacts, err := json.Marshal(e.Impacts)
+	impacts, err := toByte(impactToTable(e.Impacts))
 	if err != nil {
 		return EntryTable{}, err
 	}

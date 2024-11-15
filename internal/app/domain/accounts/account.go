@@ -9,38 +9,11 @@ import (
 
 type Status string
 
-// account status
 const (
 	Active     Status = "active"
 	OnlyCredit Status = "only_credit"
 	OnlyDebit  Status = "only_debit"
 	Inative    Status = "inactive"
-)
-
-// accounts limits
-const (
-	MaxLimit       = "max_limit"
-	TotalLimit     = "total_limit"
-	OverdraftLimit = "overdraft_limit"
-)
-
-// availables balances
-const (
-	AvailableBalance = "available_balance"
-	SavingsBalance   = "savings_balance"
-	BlockedBalance   = "blocked_balance"
-)
-
-// considers
-const (
-	ConsiderAvailableBalance = "consider_available_balance"
-	ConsiderSavingsBalance   = "consider_savings_balance"
-	ConsiderBlockedBalance   = "consider_blocked_balance"
-)
-
-const (
-	Credit = "CREDIT"
-	Debit  = "DEBIT"
 )
 
 type Account struct {
@@ -52,21 +25,6 @@ type Account struct {
 	UpdatedAt time.Time
 	Status    Status
 	Version   int64
-}
-
-type Entry struct {
-	TrackingID string
-	AccountID  int64
-	OrgID      string
-	Impacts    []Impact
-	CreatedAt  time.Time
-}
-
-type Impact struct {
-	Balance   string
-	Operation string
-	Amount    decimal.Decimal
-	Rules     []string
 }
 
 func (a *Account) ChangeStatus(status Status) {
@@ -88,7 +46,7 @@ func (a *Account) ChangeLimit(limit string, value decimal.Decimal) error {
 
 func (a *Account) ChangeBalances(impacts []Impact) error {
 	for _, i := range impacts {
-		if i.Operation == "CREDIT" && len(i.Rules) > 0 {
+		if i.Operation == Credit && len(i.Rules) > 0 {
 			return ErrValidateOperation{
 				operation: i.Operation,
 				balance:   i.Balance,
@@ -111,84 +69,4 @@ func (a *Account) ChangeBalances(impacts []Impact) error {
 func (a *Account) IncreaseVersion() {
 	a.Version++
 	a.UpdatedAt = time.Now()
-}
-
-var rules = map[string]func(*Account, decimal.Decimal) error{
-	ConsiderAvailableBalance: validateDebitAvailableBalance,
-	ConsiderSavingsBalance:   validateDebitSavingsBalance,
-	ConsiderBlockedBalance:   validateDebitBlockedBalance,
-}
-
-func validateDebitAvailableBalance(a *Account, amount decimal.Decimal) error {
-	if a.Balances[AvailableBalance].LessThan(amount) {
-		return ErrInsuficientBalance{}
-	}
-	return nil
-}
-
-func validateDebitSavingsBalance(a *Account, amount decimal.Decimal) error {
-	if a.Balances[SavingsBalance].LessThan(amount) {
-		return ErrInsuficientBalance{}
-	}
-	return nil
-}
-
-func validateDebitBlockedBalance(a *Account, amount decimal.Decimal) error {
-	if a.Balances[BlockedBalance].LessThan(amount) {
-		return ErrInsuficientBalance{}
-	}
-	return nil
-}
-
-var Operations = map[string]func(a *Account, balance string, amount decimal.Decimal) error{
-	Debit:  debitFun,
-	Credit: creditFun,
-}
-
-func creditFun(a *Account, balance string, amount decimal.Decimal) error {
-	if a.Status != Active && a.Status != OnlyCredit {
-		return ErrValidateOperation{
-			operation: Credit,
-			balance:   balance,
-			amount:    amount,
-		}
-	}
-	a.Balances[balance] = a.Balances[balance].Add(amount)
-	return nil
-}
-
-func debitFun(a *Account, balance string, amount decimal.Decimal) error {
-	if a.Status != Active && a.Status != OnlyDebit {
-		return ErrValidateOperation{
-			operation: Debit,
-			balance:   balance,
-			amount:    amount,
-		}
-	}
-	a.Balances[balance] = a.Balances[balance].Sub(amount)
-	return nil
-}
-
-var limits = map[string]func(a *Account, newValue decimal.Decimal) error{
-	MaxLimit:       validateChangeMaxLimit,
-	TotalLimit:     validateChangeTotalLimit,
-	OverdraftLimit: validateChangeOverdraftLimit,
-}
-
-func validateChangeMaxLimit(a *Account, newValue decimal.Decimal) error {
-	if a.Limits[TotalLimit].GreaterThan(newValue) {
-		return ErrValidateLimit{msg: "new limit can not less than total limit"}
-	}
-	return nil
-}
-
-func validateChangeTotalLimit(a *Account, newValue decimal.Decimal) error {
-	if a.Limits[MaxLimit].LessThan(newValue) {
-		return ErrValidateLimit{msg: "new limit can not great than max limit"}
-	}
-	return nil
-}
-
-func validateChangeOverdraftLimit(a *Account, newValue decimal.Decimal) error {
-	return nil
 }
