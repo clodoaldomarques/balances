@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 type Server struct {
@@ -30,6 +31,8 @@ func routes(e *echo.Echo) {
 	e.PUT("/accounts/:accountID/limits", accounts.UpdateAccountLimits)
 	e.PUT("/accounts/:accountID/status", accounts.UpdateAccountStatus)
 	e.POST("/accounts/entries", accounts.ProcessEntry)
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 }
 

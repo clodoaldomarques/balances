@@ -9,15 +9,14 @@ SHOW_PERSON_PORTRAIT()
 
 Person_Ext(bancos, "Agentes Financeiros", "Cliente externo que irá consulta as transações realizadas pelo sistema de pagamentos")
 
-
-System(pagamentos, "Sistema de Pagamentos", "Sistema que orquestra os pagamentos")
-System(contas, "Sistema de Contas", "Sistema que gerencia os dados cadastrais da conta do cliente")
+System_Ext(pagamentos, "Sistema de Pagamentos", "Sistema que orquestra os pagamentos")
+System_Ext(contas, "Sistema de Contas", "Sistema que gerencia os dados cadastrais da conta do cliente")
 System(saldos, "Sistema de Saldos", "Sistema responsável por gerenciar os saldos e limites")
-System(consultas, "Sistema de consulta Saldos", "Sistema responsável processar e fornecer os saldos")
+System_Ext(consultas, "Sistema de consulta Saldos", "Sistema responsável por fornecer os saldos")
 
 Rel_D(bancos, contas, "Solicita a abertura de uma conta", "JSON")
 Rel_D(bancos, pagamentos, "Solicita uma transação de pagamento", "JSON")
-Rel_U(saldos, contas, "Consome os eventos de criação de contas", "SQS", "", "", "async")
+Rel_D(contas, saldos, "Solicita a criação de limites e saldos", "JSON", "", "", "")
 Rel(pagamentos, saldos, "Solicita uma transação de Debito ou Credito", "JSON")
 Rel(bancos, consultas, "Consulta os dados das transações processadas", "JSON")
 Rel(consultas, saldos, "Consome os eventos de debito e credito processados", "SQS", "", "", "async")

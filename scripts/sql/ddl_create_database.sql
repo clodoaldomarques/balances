@@ -14,5 +14,5 @@ CREATE TABLE entries(
     account_id bigint not null,
     org_id varchar(100) not null,
     impacts json not null,
-    created_at timestamp default current_timestamp,
+    created_at timestamp default current_timestamp
 )
