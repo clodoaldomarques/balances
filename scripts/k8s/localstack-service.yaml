@@ -129,3 +129,4 @@ spec:
     com.job.service: localstack-deployment
 status:
   loadBalancer: {}
+
