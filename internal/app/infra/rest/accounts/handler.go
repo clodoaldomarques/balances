@@ -2,7 +2,7 @@ package accounts
 
 import (
 	"balances/internal/app/domain/accounts"
-	"balances/internal/app/infra/database/mysqldb"
+	"balances/internal/app/infra/database/dynamodb"
 	"net/http"
 	"strconv"
 
@@ -11,7 +11,7 @@ import (
 
 func CreateNewAccount(c echo.Context) error {
 	ctx := c.Request().Context()
-	r := mysqldb.NewRepository(ctx)
+	r := dynamodb.NewRepository(ctx)
 	defer r.Close()
 	s := accounts.NewService(r)
 
@@ -37,9 +37,11 @@ func CreateNewAccount(c echo.Context) error {
 
 func UpdateAccountLimits(c echo.Context) error {
 	ctx := c.Request().Context()
-	r := mysqldb.NewRepository(ctx)
+	r := dynamodb.NewRepository(ctx)
 	defer r.Close()
 	s := accounts.NewService(r)
+
+	orgID := c.Param("orgID")
 
 	accID, err := strconv.ParseInt(c.Param("accountID"), 10, 64)
 	if err != nil {
@@ -55,7 +57,7 @@ func UpdateAccountLimits(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	acc, err := s.UpdateAccountLimits(ctx, accID, a.Limits)
+	acc, err := s.UpdateAccountLimits(ctx, accID, orgID, a.Limits)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -67,9 +69,11 @@ func UpdateAccountLimits(c echo.Context) error {
 
 func UpdateAccountStatus(c echo.Context) error {
 	ctx := c.Request().Context()
-	r := mysqldb.NewRepository(ctx)
+	r := dynamodb.NewRepository(ctx)
 	defer r.Close()
 	s := accounts.NewService(r)
+
+	orgID := c.Param("orgID")
 
 	accID, err := strconv.ParseInt(c.Param("accountID"), 10, 64)
 	if err != nil {
@@ -85,7 +89,7 @@ func UpdateAccountStatus(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	acc, err := s.UpdateAccountStatus(ctx, accID, accounts.Status(a.Status))
+	acc, err := s.UpdateAccountStatus(ctx, accID, orgID, accounts.Status(a.Status))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -97,7 +101,7 @@ func UpdateAccountStatus(c echo.Context) error {
 
 func ProcessEntry(c echo.Context) error {
 	ctx := c.Request().Context()
-	r := mysqldb.NewRepository(ctx)
+	r := dynamodb.NewRepository(ctx)
 	defer r.Close()
 	s := accounts.NewService(r)
 

@@ -1,4 +1,4 @@
-package mysqldb
+package dynamodb
 
 import (
 	"balances/internal/app/domain/accounts"
@@ -6,33 +6,47 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/shopspring/decimal"
 )
 
 type Account struct {
-	AccountID int64              `json:"account_id"`
-	OrgID     string             `json:"org_id"`
-	Limits    commons.DecimalMap `json:"limits"`
-	Balances  commons.DecimalMap `json:"balances"`
-	CreatedAt time.Time          `json:"created_at"`
-	UpdatedAt time.Time          `json:"updated_at"`
-	Status    string             `json:"status"`
-	Version   int64              `json:"version"`
+	AccountID int64              `dynamodbav:"account_id"`
+	OrgID     string             `dynamodbav:"org_id"`
+	Limits    commons.DecimalMap `dynamodbav:"limits"`
+	Balances  commons.DecimalMap `dynamodbav:"balances"`
+	CreatedAt time.Time          `dynamodbav:"created_at"`
+	UpdatedAt time.Time          `dynamodbav:"updated_at"`
+	Status    string             `dynamodbav:"status"`
+	Version   int64              `dynamodbav:"version"`
 }
 
 type Entry struct {
-	TrackingID string    `json:"tracking_id"`
-	AccountID  int64     `json:"account_id"`
-	OrgID      string    `json:"org_id"`
-	Impacts    []byte    `json:"impacts"`
-	CreatedAt  time.Time `json:"created_at"`
+	TrackingID string    `dynamodbav:"tracking_id"`
+	AccountID  int64     `dynamodbav:"account_id"`
+	OrgID      string    `dynamodbav:"org_id"`
+	Impacts    []byte    `dynamodbav:"impacts"`
+	CreatedAt  time.Time `dynamodbav:"created_at"`
 }
 
 type Impact struct {
-	Balance   string          `json:"balance"`
-	Operation string          `json:"operation"`
-	Amount    decimal.Decimal `json:"amount"`
-	Rules     []string        `json:"rules,omitempty"`
+	Balance   string          `dynamodbav:"balance"`
+	Operation string          `dynamodbav:"operation"`
+	Amount    decimal.Decimal `dynamodbav:"amount"`
+	Rules     []string        `dynamodbav:"rules"`
+}
+
+func (a Account) GetKey() map[string]types.AttributeValue {
+	acc, err := attributevalue.Marshal(a.AccountID)
+	if err != nil {
+		panic(err)
+	}
+	org, err := attributevalue.Marshal(a.OrgID)
+	if err != nil {
+		panic(err)
+	}
+	return map[string]types.AttributeValue{"account_id": acc, "org_id": org}
 }
 
 func (a Account) toEntity() accounts.Account {

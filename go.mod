@@ -5,6 +5,8 @@ go 1.22.0
 toolchain go1.22.2
 
 require (
+	github.com/aws/aws-sdk-go v1.55.5
+	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.15.17
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/golang/mock v1.6.0
@@ -18,6 +20,8 @@ require (
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.24.6 // indirect
+	github.com/aws/smithy-go v1.22.1 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
 	github.com/go-openapi/jsonreference v0.21.0 // indirect
@@ -25,6 +29,7 @@ require (
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
@@ -45,6 +50,7 @@ require (
 )
 
 require (
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.37.1
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.9.0

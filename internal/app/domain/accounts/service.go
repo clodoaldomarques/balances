@@ -1,8 +1,9 @@
 package accounts
 
 import (
-	"balances/internal/app/domain/commons"
 	"context"
+
+	"github.com/shopspring/decimal"
 )
 
 type Service struct {
@@ -22,8 +23,8 @@ func (s Service) CreateNewAccount(ctx context.Context, a Account) (Account, erro
 	return a, nil
 }
 
-func (s Service) UpdateAccountLimits(ctx context.Context, accountID int64, limits commons.DecimalMap) (Account, error) {
-	acc, err := s.rep.RetrieveAccountByID(ctx, accountID)
+func (s Service) UpdateAccountLimits(ctx context.Context, accountID int64, orgID string, limits map[string]decimal.Decimal) (Account, error) {
+	acc, err := s.rep.RetrieveAccountByID(ctx, accountID, orgID)
 	if err != nil {
 		return Account{}, err
 	}
@@ -42,8 +43,8 @@ func (s Service) UpdateAccountLimits(ctx context.Context, accountID int64, limit
 
 }
 
-func (s Service) UpdateAccountStatus(ctx context.Context, accountID int64, status Status) (Account, error) {
-	acc, err := s.rep.RetrieveAccountByID(ctx, accountID)
+func (s Service) UpdateAccountStatus(ctx context.Context, accountID int64, orgID string, status Status) (Account, error) {
+	acc, err := s.rep.RetrieveAccountByID(ctx, accountID, orgID)
 	if err != nil {
 		return Account{}, err
 	}
@@ -58,7 +59,7 @@ func (s Service) UpdateAccountStatus(ctx context.Context, accountID int64, statu
 }
 
 func (s Service) ProcessEntry(ctx context.Context, e Entry) (Account, error) {
-	acc, err := s.rep.RetrieveAccountByID(ctx, e.AccountID)
+	acc, err := s.rep.RetrieveAccountByID(ctx, e.AccountID, e.OrgID)
 	if err != nil {
 		return Account{}, err
 	}

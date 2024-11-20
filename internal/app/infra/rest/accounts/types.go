@@ -2,7 +2,6 @@ package accounts
 
 import (
 	"balances/internal/app/domain/accounts"
-	"balances/internal/app/domain/commons"
 	"errors"
 	"fmt"
 	"slices"
@@ -24,10 +23,10 @@ type EntityRequest interface {
 }
 
 type PostAccountRequest struct {
-	AccountID int64              `json:"account_id,omitempty"`
-	OrgID     string             `json:"org_id,omitempty"`
-	Limits    commons.DecimalMap `json:"limits,omitempty"`
-	Balances  commons.DecimalMap `json:"balances,omitempty"`
+	AccountID int64                      `json:"account_id,omitempty"`
+	OrgID     string                     `json:"org_id,omitempty"`
+	Limits    map[string]decimal.Decimal `json:"limits,omitempty"`
+	Balances  map[string]decimal.Decimal `json:"balances,omitempty"`
 }
 
 func (p PostAccountRequest) ToEntity() accounts.Account {
@@ -70,14 +69,14 @@ func (p PostAccountRequest) Validate() error {
 }
 
 type PostAccountResponse struct {
-	AccountID int64              `json:"account_id,omitempty"`
-	OrgID     string             `json:"org_id,omitempty"`
-	Limits    commons.DecimalMap `json:"limits,omitempty"`
-	Balances  commons.DecimalMap `json:"balances,omitempty"`
-	CreatedAt time.Time          `json:"created_at,omitempty"`
-	UpdatedAt time.Time          `json:"updated_at,omitempty"`
-	Status    string             `json:"status,omitempty"`
-	Version   int64              `json:"version,omitempty"`
+	AccountID int64                      `json:"account_id,omitempty"`
+	OrgID     string                     `json:"org_id,omitempty"`
+	Limits    map[string]decimal.Decimal `json:"limits,omitempty"`
+	Balances  map[string]decimal.Decimal `json:"balances,omitempty"`
+	CreatedAt time.Time                  `json:"created_at,omitempty"`
+	UpdatedAt time.Time                  `json:"updated_at,omitempty"`
+	Status    string                     `json:"status,omitempty"`
+	Version   int64                      `json:"version,omitempty"`
 }
 
 func AccountToPostAccountResponse(acc accounts.Account) PostAccountResponse {
@@ -94,7 +93,7 @@ func AccountToPostAccountResponse(acc accounts.Account) PostAccountResponse {
 }
 
 type PutAccountLimitsRequest struct {
-	Limits commons.DecimalMap `json:"limits" validate:"required"`
+	Limits map[string]decimal.Decimal `json:"limits" validate:"required"`
 }
 
 func (p PutAccountLimitsRequest) Validate() error {
@@ -124,14 +123,14 @@ func (p PutAccountStatusRequest) Validate() error {
 }
 
 type PutAccountResponse struct {
-	AccountID int64              `json:"account_id,omitempty"`
-	OrgID     string             `json:"org_id,omitempty"`
-	Limits    commons.DecimalMap `json:"limits,omitempty"`
-	Balances  commons.DecimalMap `json:"balances,omitempty"`
-	CreatedAt time.Time          `json:"created_at,omitempty"`
-	UpdatedAt time.Time          `json:"updated_at,omitempty"`
-	Status    string             `json:"status,omitempty"`
-	Version   int64              `json:"version,omitempty"`
+	AccountID int64                      `json:"account_id,omitempty"`
+	OrgID     string                     `json:"org_id,omitempty"`
+	Limits    map[string]decimal.Decimal `json:"limits,omitempty"`
+	Balances  map[string]decimal.Decimal `json:"balances,omitempty"`
+	CreatedAt time.Time                  `json:"created_at,omitempty"`
+	UpdatedAt time.Time                  `json:"updated_at,omitempty"`
+	Status    string                     `json:"status,omitempty"`
+	Version   int64                      `json:"version,omitempty"`
 }
 
 func AccountToPutAccountResponse(acc accounts.Account) PutAccountResponse {

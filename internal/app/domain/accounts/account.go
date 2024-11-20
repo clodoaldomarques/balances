@@ -1,7 +1,6 @@
 package accounts
 
 import (
-	"balances/internal/app/domain/commons"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -19,8 +18,8 @@ const (
 type Account struct {
 	AccountID int64
 	OrgID     string
-	Limits    commons.DecimalMap
-	Balances  commons.DecimalMap
+	Limits    map[string]decimal.Decimal
+	Balances  map[string]decimal.Decimal
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Status    Status

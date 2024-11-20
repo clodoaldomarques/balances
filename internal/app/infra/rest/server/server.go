@@ -28,8 +28,8 @@ func routes(e *echo.Echo) {
 
 	// Accounts handler
 	e.POST("/accounts", accounts.CreateNewAccount)
-	e.PUT("/accounts/:accountID/limits", accounts.UpdateAccountLimits)
-	e.PUT("/accounts/:accountID/status", accounts.UpdateAccountStatus)
+	e.PUT("/accounts/:orgID/:accountID/limits", accounts.UpdateAccountLimits)
+	e.PUT("/accounts/:orgID/:accountID/status", accounts.UpdateAccountStatus)
 	e.POST("/accounts/entries", accounts.ProcessEntry)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)

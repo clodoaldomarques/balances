@@ -35,18 +35,18 @@ func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
 }
 
 // RetrieveAccountByID mocks base method.
-func (m *MockRepository) RetrieveAccountByID(ctx context.Context, accountID int64) (Account, error) {
+func (m *MockRepository) RetrieveAccountByID(ctx context.Context, accountID int64, orgID string) (Account, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RetrieveAccountByID", ctx, accountID)
+	ret := m.ctrl.Call(m, "RetrieveAccountByID", ctx, accountID, orgID)
 	ret0, _ := ret[0].(Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // RetrieveAccountByID indicates an expected call of RetrieveAccountByID.
-func (mr *MockRepositoryMockRecorder) RetrieveAccountByID(ctx, accountID interface{}) *gomock.Call {
+func (mr *MockRepositoryMockRecorder) RetrieveAccountByID(ctx, accountID, orgID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveAccountByID", reflect.TypeOf((*MockRepository)(nil).RetrieveAccountByID), ctx, accountID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveAccountByID", reflect.TypeOf((*MockRepository)(nil).RetrieveAccountByID), ctx, accountID, orgID)
 }
 
 // SaveEntryAndUpdateAccount mocks base method.
