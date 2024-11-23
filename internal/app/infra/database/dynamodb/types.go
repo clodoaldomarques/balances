@@ -8,6 +8,8 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/shopspring/decimal"
 )
 
@@ -62,8 +64,8 @@ func (a Account) toEntity() accounts.Account {
 	}
 }
 
-func toAccount(a accounts.Account) Account {
-	return Account{
+func toAccount(a accounts.Account) (map[string]*dynamodb.AttributeValue, error) {
+	acc := Account{
 		AccountID: a.AccountID,
 		OrgID:     a.OrgID,
 		Limits:    a.Limits,
@@ -73,20 +75,24 @@ func toAccount(a accounts.Account) Account {
 		Status:    string(a.Status),
 		Version:   a.Version,
 	}
+	return dynamodbattribute.MarshalMap(acc)
+
 }
 
-func toEntries(e accounts.Entry) (Entry, error) {
+func toEntries(e accounts.Entry) (map[string]*dynamodb.AttributeValue, error) {
 	imps, err := json.Marshal(toImpacts(e.Impacts))
 	if err != nil {
-		return Entry{}, err
+		return nil, err
 	}
-	return Entry{
+	en := Entry{
 		TrackingID: e.TrackingID,
 		AccountID:  e.AccountID,
 		OrgID:      e.OrgID,
 		Impacts:    imps,
 		CreatedAt:  e.CreatedAt,
-	}, nil
+	}
+
+	return dynamodbattribute.MarshalMap(en)
 }
 
 func toImpacts(impact []accounts.Impact) []Impact {

@@ -36,7 +36,7 @@ func (r Repository) Close() {
 }
 
 func (r Repository) SaveNewAccount(ctx context.Context, a accounts.Account) error {
-	item, err := dynamodbattribute.MarshalMap(a)
+	item, err := toAccount(a)
 	if err != nil {
 		return err
 	}
