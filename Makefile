@@ -1,19 +1,19 @@
-run: run-app run-worker run-dispatcher
+run: app-run worker-run dispatcher-run
 
-run-app:
+app-run:
 	go run cmd/app/main.go
 
-run-worker:
+worker-run:
 	go run cmd/worker/main.go
 
-run-dispatcher:
+dispatcher-run:
 	go run cmd/dispatcher/main.go
 
-build-app:
+app-build-app:
 	docker build -t clodoaldomarques/balances-api:$(version) -f scripts/docker/app/Dockerfile .
 	docker build -t clodoaldomarques/balances-api:latest -f scripts/docker/app/Dockerfile .
 
-push-app:
+app-push:
 	docker push clodoaldomarques/balances-api:latest
 	docker push clodoaldomarques/balances-api:$(version)
 
