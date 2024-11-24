@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/shopspring/decimal"
 )
 
@@ -28,21 +27,4 @@ func (d *DecimalMap) Scan(src interface{}) error {
 	default:
 		return fmt.Errorf("unsupported type: %T", src)
 	}
-}
-
-func (d *DecimalMap) MarshalJSON() ([]byte, error) {
-	var m map[string][]byte
-	for k, v := range *d {
-		value, err := v.MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		m[k] = value
-	}
-	return json.Marshal(m)
-}
-
-func (d *DecimalMap) MarshalDynamoDBAttributeValue() (types.AttributeValue, error) {
-	fmt.Println("chamou o metodo")
-	return nil, nil
 }

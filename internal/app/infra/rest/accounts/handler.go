@@ -2,7 +2,7 @@ package accounts
 
 import (
 	"balances/internal/app/domain/accounts"
-	"balances/internal/app/infra/database/dynamodb"
+	"balances/internal/app/infra/database/mysqldb"
 	"net/http"
 	"strconv"
 
@@ -11,7 +11,7 @@ import (
 
 func CreateNewAccount(c echo.Context) error {
 	ctx := c.Request().Context()
-	r := dynamodb.NewRepository(ctx)
+	r := mysqldb.NewRepository(ctx)
 	defer r.Close()
 	s := accounts.NewService(r)
 
@@ -37,7 +37,7 @@ func CreateNewAccount(c echo.Context) error {
 
 func UpdateAccountLimits(c echo.Context) error {
 	ctx := c.Request().Context()
-	r := dynamodb.NewRepository(ctx)
+	r := mysqldb.NewRepository(ctx)
 	defer r.Close()
 	s := accounts.NewService(r)
 
@@ -69,7 +69,7 @@ func UpdateAccountLimits(c echo.Context) error {
 
 func UpdateAccountStatus(c echo.Context) error {
 	ctx := c.Request().Context()
-	r := dynamodb.NewRepository(ctx)
+	r := mysqldb.NewRepository(ctx)
 	defer r.Close()
 	s := accounts.NewService(r)
 
@@ -101,7 +101,7 @@ func UpdateAccountStatus(c echo.Context) error {
 
 func ProcessEntry(c echo.Context) error {
 	ctx := c.Request().Context()
-	r := dynamodb.NewRepository(ctx)
+	r := mysqldb.NewRepository(ctx)
 	defer r.Close()
 	s := accounts.NewService(r)
 
