@@ -1,8 +1,8 @@
 package accounts
 
 import (
+	"balances/internal/app/domain/commons"
 	"balances/internal/app/domain/events"
-	"balances/internal/commons"
 	"time"
 
 	"github.com/google/uuid"
