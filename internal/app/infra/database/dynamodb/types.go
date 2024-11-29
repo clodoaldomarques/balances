@@ -2,7 +2,7 @@ package dynamodb
 
 import (
 	"balances/internal/app/domain/accounts"
-	"balances/internal/app/infra/database/commons"
+	"balances/internal/commons"
 	"encoding/json"
 	"time"
 

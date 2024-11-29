@@ -1,4 +1,4 @@
-package dynamodb
+package sns
 
 import (
 	"balances/configs"
@@ -7,7 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/sns"
 )
 
 func NewSession() (*session.Session, error) {
@@ -26,11 +26,13 @@ func NewSession() (*session.Session, error) {
 	)
 }
 
-func Connect() (*dynamodb.DynamoDB, error) {
+func Connect() (*sns.SNS, error) {
 	sess, err := NewSession()
 	if err != nil {
 		log.Printf("connection error: %v", err)
 		return nil, err
 	}
-	return dynamodb.New(sess), nil
+
+	svc := sns.New(sess)
+	return svc, nil
 }

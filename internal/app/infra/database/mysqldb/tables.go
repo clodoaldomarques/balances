@@ -2,7 +2,7 @@ package mysqldb
 
 import (
 	"balances/internal/app/domain/accounts"
-	"balances/internal/app/infra/database/commons"
+	"balances/internal/commons"
 	"encoding/json"
 	"time"
 
@@ -48,7 +48,7 @@ func (a Account) toEntity() accounts.Account {
 	}
 }
 
-func toAccount(a accounts.Account) Account {
+func buildAccountTable(a accounts.Account) Account {
 	return Account{
 		AccountID: a.AccountID,
 		OrgID:     a.OrgID,
@@ -61,8 +61,8 @@ func toAccount(a accounts.Account) Account {
 	}
 }
 
-func toEntries(e accounts.Entry) (Entry, error) {
-	imps, err := json.Marshal(toImpacts(e.Impacts))
+func buildEntriesTable(e accounts.Entry) (Entry, error) {
+	imps, err := json.Marshal(buildImpactsTable(e.Impacts))
 	if err != nil {
 		return Entry{}, err
 	}
@@ -75,7 +75,7 @@ func toEntries(e accounts.Entry) (Entry, error) {
 	}, nil
 }
 
-func toImpacts(impact []accounts.Impact) []Impact {
+func buildImpactsTable(impact []accounts.Impact) []Impact {
 	impacts := make([]Impact, 0, len(impact))
 	for _, i := range impact {
 		new := Impact{

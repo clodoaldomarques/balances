@@ -8,11 +8,13 @@ import (
 
 type Service struct {
 	rep Repository
+	pub Publisher
 }
 
-func NewService(r Repository) *Service {
+func NewService(r Repository, p Publisher) *Service {
 	return &Service{
 		rep: r,
+		pub: p,
 	}
 }
 
@@ -20,6 +22,10 @@ func (s Service) CreateNewAccount(ctx context.Context, a Account) (Account, erro
 	if err := s.rep.SaveNewAccount(ctx, a); err != nil {
 		return Account{}, err
 	}
+
+	evt := buildCreateAccountEvent(a)
+	s.pub.Emit(ctx, evt)
+
 	return a, nil
 }
 
@@ -39,6 +45,9 @@ func (s Service) UpdateAccountLimits(ctx context.Context, accountID int64, orgID
 		return Account{}, err
 	}
 
+	evt := buildUpdateAccountEvent(acc)
+	s.pub.Emit(ctx, evt)
+
 	return acc, nil
 
 }
@@ -54,6 +63,9 @@ func (s Service) UpdateAccountStatus(ctx context.Context, accountID int64, orgID
 	if err = s.rep.UpdateExistingAccount(ctx, acc); err != nil {
 		return Account{}, err
 	}
+
+	evt := buildUpdateAccountEvent(acc)
+	s.pub.Emit(ctx, evt)
 
 	return acc, nil
 }
@@ -71,6 +83,9 @@ func (s Service) ProcessEntry(ctx context.Context, e Entry) (Account, error) {
 	if err = s.rep.SaveEntryAndUpdateAccount(ctx, e, acc); err != nil {
 		return Account{}, err
 	}
+
+	evt := buildProcessEntryEvent(acc, e)
+	s.pub.Emit(ctx, evt)
 
 	return acc, nil
 }

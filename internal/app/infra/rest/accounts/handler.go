@@ -3,6 +3,7 @@ package accounts
 import (
 	"balances/internal/app/domain/accounts"
 	"balances/internal/app/infra/database/mysqldb"
+	"balances/internal/app/infra/sns"
 	"net/http"
 	"strconv"
 
@@ -13,7 +14,10 @@ func CreateNewAccount(c echo.Context) error {
 	ctx := c.Request().Context()
 	r := mysqldb.NewRepository(ctx)
 	defer r.Close()
-	s := accounts.NewService(r)
+
+	p := sns.NewPublisher(ctx)
+
+	s := accounts.NewService(r, p)
 
 	a := new(PostAccountRequest)
 	if err := c.Bind(a); err != nil {
@@ -39,7 +43,9 @@ func UpdateAccountLimits(c echo.Context) error {
 	ctx := c.Request().Context()
 	r := mysqldb.NewRepository(ctx)
 	defer r.Close()
-	s := accounts.NewService(r)
+
+	p := sns.NewPublisher(ctx)
+	s := accounts.NewService(r, p)
 
 	orgID := c.Param("orgID")
 
@@ -71,7 +77,9 @@ func UpdateAccountStatus(c echo.Context) error {
 	ctx := c.Request().Context()
 	r := mysqldb.NewRepository(ctx)
 	defer r.Close()
-	s := accounts.NewService(r)
+
+	p := sns.NewPublisher(ctx)
+	s := accounts.NewService(r, p)
 
 	orgID := c.Param("orgID")
 
@@ -103,7 +111,9 @@ func ProcessEntry(c echo.Context) error {
 	ctx := c.Request().Context()
 	r := mysqldb.NewRepository(ctx)
 	defer r.Close()
-	s := accounts.NewService(r)
+
+	p := sns.NewPublisher(ctx)
+	s := accounts.NewService(r, p)
 
 	e := new(PostEntryRequest)
 	if err := c.Bind(e); err != nil {

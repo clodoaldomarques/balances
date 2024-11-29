@@ -32,7 +32,7 @@ func (r Repository) Close() {
 }
 
 func (r Repository) SaveNewAccount(ctx context.Context, a accounts.Account) error {
-	acc := toAccount(a)
+	acc := buildAccountTable(a)
 	statement, err := r.db.Prepare(INSERT_ACCOUNT)
 	if err != nil {
 		return err
@@ -54,7 +54,7 @@ func (r Repository) SaveNewAccount(ctx context.Context, a accounts.Account) erro
 	return nil
 }
 func (r Repository) UpdateExistingAccount(ctx context.Context, a accounts.Account) error {
-	acc := toAccount(a)
+	acc := buildAccountTable(a)
 	statement, err := r.db.Prepare(UPDATE_ACCOUNT)
 	if err != nil {
 		return err
@@ -105,7 +105,7 @@ func (r Repository) SaveEntryAndUpdateAccount(ctx context.Context, e accounts.En
 	}
 	defer stat.Close()
 
-	en, err := toEntries(e)
+	en, err := buildEntriesTable(e)
 	if err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func (r Repository) SaveEntryAndUpdateAccount(ctx context.Context, e accounts.En
 		return err
 	}
 
-	acc := toAccount(a)
+	acc := buildAccountTable(a)
 	stat, err = tx.Prepare(UPDATE_ACCOUNT)
 	if err != nil {
 		return err

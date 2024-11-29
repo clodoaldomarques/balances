@@ -1,0 +1,116 @@
+package accounts
+
+import (
+	"balances/internal/app/domain/events"
+	"balances/internal/commons"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
+)
+
+type CreateAccountEvent struct {
+	AccountID int64              `json:"account_id"`
+	OrgID     string             `json:"org_id"`
+	Limits    commons.DecimalMap `json:"limits"`
+	Balances  commons.DecimalMap `json:"balances"`
+	CreatedAt time.Time          `json:"created_at"`
+	Status    string             `json:"status"`
+	Version   int64              `json:"version"`
+}
+
+func buildCreateAccountEvent(a Account) events.Event {
+	evt := CreateAccountEvent{
+		AccountID: a.AccountID,
+		OrgID:     a.OrgID,
+		Limits:    a.Limits,
+		Balances:  a.Balances,
+		CreatedAt: a.CreatedAt,
+		Status:    string(a.Status),
+		Version:   a.Version,
+	}
+
+	return events.Event{
+		EventID:   uuid.New(),
+		EventType: "create_account",
+		Data:      evt,
+		EventDate: time.Now(),
+	}
+}
+
+type UpdateAccountEvent struct {
+	AccountID int64              `json:"account_id"`
+	OrgID     string             `json:"org_id"`
+	Limits    commons.DecimalMap `json:"limits"`
+	Status    string             `json:"status"`
+	UpdatedAt time.Time          `json:"updated_at"`
+	Version   int64              `json:"version"`
+}
+
+func buildUpdateAccountEvent(a Account) events.Event {
+	evt := UpdateAccountEvent{
+		AccountID: a.AccountID,
+		OrgID:     a.OrgID,
+		Limits:    a.Limits,
+		UpdatedAt: a.UpdatedAt,
+		Status:    string(a.Status),
+		Version:   a.Version,
+	}
+
+	return events.Event{
+		EventID:   uuid.New(),
+		EventType: "update_account",
+		Data:      evt,
+		EventDate: time.Now(),
+	}
+}
+
+type ProcessEntryEvent struct {
+	AccountID  int64              `json:"account_id"`
+	OrgID      string             `json:"org_id"`
+	TrackingID string             `json:"tracking_id"`
+	Impacts    []ImpactEvent      `json:"impacts"`
+	Balances   commons.DecimalMap `json:"balances"`
+	Version    int64              `json:"version"`
+	CreatedAt  time.Time          `json:"created_at"`
+}
+
+func buildProcessEntryEvent(a Account, e Entry) events.Event {
+	evt := ProcessEntryEvent{
+		AccountID:  a.AccountID,
+		OrgID:      a.OrgID,
+		TrackingID: e.TrackingID,
+		Impacts:    buildImpactEvents(e.Impacts),
+		Balances:   a.Balances,
+		Version:    a.Version,
+		CreatedAt:  e.CreatedAt,
+	}
+
+	return events.Event{
+		EventID:   uuid.New(),
+		EventType: "process_entry",
+		Data:      evt,
+		EventDate: time.Now(),
+	}
+}
+
+type ImpactEvent struct {
+	Balance   string          `json:"balance"`
+	Operation string          `json:"operation"`
+	Amount    decimal.Decimal `json:"amount"`
+	Rules     []string        `json:"rules,omitempty"`
+}
+
+func buildImpactEvents(impacts []Impact) []ImpactEvent {
+	evts := make([]ImpactEvent, 0, len(impacts))
+	for _, i := range impacts {
+		new := ImpactEvent{
+			Balance:   i.Balance,
+			Operation: i.Operation,
+			Amount:    i.Amount,
+			Rules:     i.Rules,
+		}
+		evts = append(evts, new)
+	}
+	return evts
+}

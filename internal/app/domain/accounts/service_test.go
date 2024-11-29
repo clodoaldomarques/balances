@@ -15,13 +15,13 @@ import (
 func TestNewService(t *testing.T) {
 	tests := []struct {
 		name  string
-		setup func(ctrl *gomock.Controller) Repository
+		setup func(ctrl *gomock.Controller) (Repository, Publisher)
 		want  func(t *testing.T, s *Service)
 	}{
 		{
 			name: "when create new service with success",
-			setup: func(ctrl *gomock.Controller) Repository {
-				return NewMockRepository(ctrl)
+			setup: func(ctrl *gomock.Controller) (Repository, Publisher) {
+				return NewMockRepository(ctrl), NewMockPublisher(ctrl)
 			},
 			want: func(t *testing.T, s *Service) {
 				assert.NotEmpty(t, s)
@@ -31,8 +31,10 @@ func TestNewService(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
-			r := tt.setup(ctrl)
-			tt.want(t, NewService(r))
+			defer ctrl.Finish()
+
+			r, p := tt.setup(ctrl)
+			tt.want(t, NewService(r, p))
 		})
 	}
 }
@@ -49,7 +51,9 @@ func TestService_CreateNewAccount(t *testing.T) {
 			setup: func(ctrl *gomock.Controller) *Service {
 				rep := NewMockRepository(ctrl)
 				rep.EXPECT().SaveNewAccount(gomock.Any(), gomock.Any()).Return(nil).Times(1)
-				return NewService(rep)
+				pub := NewMockPublisher(ctrl)
+				pub.EXPECT().Emit(gomock.Any(), gomock.Any()).Times(1)
+				return NewService(rep, pub)
 			},
 			args: func() Account {
 				return buildAccount()
@@ -63,7 +67,8 @@ func TestService_CreateNewAccount(t *testing.T) {
 			setup: func(ctrl *gomock.Controller) *Service {
 				rep := NewMockRepository(ctrl)
 				rep.EXPECT().SaveNewAccount(gomock.Any(), gomock.Any()).Return(errors.New("repository not found")).Times(1)
-				return NewService(rep)
+				pub := NewMockPublisher(ctrl)
+				return NewService(rep, pub)
 			},
 			args: func() Account {
 				return buildAccount()
@@ -76,8 +81,11 @@ func TestService_CreateNewAccount(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
 			s := tt.setup(ctrl)
 			acc, e := s.CreateNewAccount(context.Background(), tt.args())
+
 			tt.want(t, acc, e)
 		})
 	}
@@ -97,7 +105,10 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 				acc := buildAccount()
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(acc, nil).Times(1)
 				rep.EXPECT().UpdateExistingAccount(gomock.Any(), gomock.Any()).Return(nil).Times(1)
-				return NewService(rep)
+
+				pub := NewMockPublisher(ctrl)
+				pub.EXPECT().Emit(gomock.Any(), gomock.Any()).AnyTimes()
+				return NewService(rep, pub)
 			},
 			args: func() (int64, string, map[string]decimal.Decimal) {
 				return int64(230513), "TN-12345678", map[string]decimal.Decimal{
@@ -114,7 +125,10 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 				rep := NewMockRepository(ctrl)
 				acc := Account{}
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(acc, errors.New("Account not found")).Times(1)
-				return NewService(rep)
+
+				pub := NewMockPublisher(ctrl)
+				pub.EXPECT().Emit(gomock.Any(), gomock.Any()).AnyTimes()
+				return NewService(rep, pub)
 			},
 			args: func() (int64, string, map[string]decimal.Decimal) {
 				return int64(230513), "TN-12345678", map[string]decimal.Decimal{
@@ -132,7 +146,10 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 				rep := NewMockRepository(ctrl)
 				acc := buildAccount()
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(acc, nil).Times(1)
-				return NewService(rep)
+
+				pub := NewMockPublisher(ctrl)
+				pub.EXPECT().Emit(gomock.Any(), gomock.Any()).AnyTimes()
+				return NewService(rep, pub)
 			},
 			args: func() (int64, string, map[string]decimal.Decimal) {
 				return int64(230513), "TN-12345678", map[string]decimal.Decimal{
@@ -151,7 +168,10 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 				acc := buildAccount()
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(acc, nil).Times(1)
 				rep.EXPECT().UpdateExistingAccount(gomock.Any(), gomock.Any()).Return(errors.New("error on update account")).Times(1)
-				return NewService(rep)
+
+				pub := NewMockPublisher(ctrl)
+				pub.EXPECT().Emit(gomock.Any(), gomock.Any()).AnyTimes()
+				return NewService(rep, pub)
 			},
 			args: func() (int64, string, map[string]decimal.Decimal) {
 				return int64(230513), "TN-12345678", map[string]decimal.Decimal{
@@ -167,6 +187,7 @@ func TestService_UpdateAccountLimits(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
 			s := tt.setup(ctrl)
 			accID, orgID, limits := tt.args()
 			acc, e := s.UpdateAccountLimits(context.Background(), accID, orgID, limits)
@@ -189,7 +210,10 @@ func TestService_UpdateAccountStatus(t *testing.T) {
 				acc := buildAccount()
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(acc, nil).Times(1)
 				rep.EXPECT().UpdateExistingAccount(gomock.Any(), gomock.Any()).Return(nil).Times(1)
-				return NewService(rep)
+
+				pub := NewMockPublisher(ctrl)
+				pub.EXPECT().Emit(gomock.Any(), gomock.Any()).Times(1)
+				return NewService(rep, pub)
 			},
 			args: func() (int64, string, Status) {
 				return int64(230513), "TN-12345678", Inative
@@ -204,7 +228,8 @@ func TestService_UpdateAccountStatus(t *testing.T) {
 				rep := NewMockRepository(ctrl)
 				acc := Account{}
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(acc, errors.New("account not found")).Times(1)
-				return NewService(rep)
+				pub := NewMockPublisher(ctrl)
+				return NewService(rep, pub)
 			},
 			args: func() (int64, string, Status) {
 				return int64(230513), "TN-12345678", Inative
@@ -221,7 +246,8 @@ func TestService_UpdateAccountStatus(t *testing.T) {
 				acc := buildAccount()
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(acc, nil).Times(1)
 				rep.EXPECT().UpdateExistingAccount(gomock.Any(), gomock.Any()).Return(errors.New("account update failed")).Times(1)
-				return NewService(rep)
+				pub := NewMockPublisher(ctrl)
+				return NewService(rep, pub)
 			},
 			args: func() (int64, string, Status) {
 				return int64(230513), "TN-12345678", Inative
@@ -257,7 +283,9 @@ func TestService_ProcessEntry(t *testing.T) {
 				acc := buildAccount()
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(acc, nil).Times(1)
 				rep.EXPECT().SaveEntryAndUpdateAccount(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).Times(1)
-				return NewService(rep)
+				pub := NewMockPublisher(ctrl)
+				pub.EXPECT().Emit(gomock.Any(), gomock.Any()).AnyTimes()
+				return NewService(rep, pub)
 			},
 			args: func() Entry {
 				return buildEntry(decimal.NewFromInt(10))
@@ -271,7 +299,9 @@ func TestService_ProcessEntry(t *testing.T) {
 			setup: func(ctrl *gomock.Controller) *Service {
 				rep := NewMockRepository(ctrl)
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(Account{}, errors.New("account not found")).Times(1)
-				return NewService(rep)
+				pub := NewMockPublisher(ctrl)
+				pub.EXPECT().Emit(gomock.Any(), gomock.Any()).AnyTimes()
+				return NewService(rep, pub)
 			},
 			args: func() Entry {
 				return buildEntry(decimal.NewFromInt(10))
@@ -288,7 +318,9 @@ func TestService_ProcessEntry(t *testing.T) {
 				acc := buildAccount()
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(acc, nil).Times(1)
 				rep.EXPECT().SaveEntryAndUpdateAccount(gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("illegal operation")).Times(1)
-				return NewService(rep)
+				pub := NewMockPublisher(ctrl)
+				pub.EXPECT().Emit(gomock.Any(), gomock.Any()).AnyTimes()
+				return NewService(rep, pub)
 			},
 			args: func() Entry {
 				return buildEntry(decimal.NewFromInt(10))
@@ -304,7 +336,9 @@ func TestService_ProcessEntry(t *testing.T) {
 				rep := NewMockRepository(ctrl)
 				acc := buildAccount()
 				rep.EXPECT().RetrieveAccountByID(gomock.Any(), gomock.Eq(int64(230513)), gomock.Eq("TN-12345678")).Return(acc, nil).Times(1)
-				return NewService(rep)
+				pub := NewMockPublisher(ctrl)
+				pub.EXPECT().Emit(gomock.Any(), gomock.Any()).AnyTimes()
+				return NewService(rep, pub)
 			},
 			args: func() Entry {
 				return buildEntry(decimal.NewFromInt(1000))
