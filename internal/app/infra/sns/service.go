@@ -3,39 +3,41 @@ package sns
 import (
 	"balances/configs"
 	"balances/internal/app/domain/events"
+	"balances/pkg/logger"
 	"context"
-	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/sns"
+	"github.com/aws/aws-sdk-go-v2/service/sns"
 )
 
 type Publisher struct {
 	ctx      context.Context
-	svc      *sns.SNS
+	svc      *sns.Client
 	topicARN string
 }
 
 func NewPublisher(ctx context.Context) *Publisher {
-	svc, err := Connect()
-	if err != nil {
-		panic(err)
-	}
+	svc := NewSNSClient(ctx)
 	return &Publisher{
 		ctx:      ctx,
 		svc:      svc,
-		topicARN: configs.New().SnsAccountTopic,
+		topicARN: configs.New().BalancesSNSTopic,
 	}
 }
 
 func (p Publisher) Emit(ctx context.Context, evt events.Event) {
-	fmt.Println(*evt.ToMessage())
-	result, err := p.svc.Publish(&sns.PublishInput{
+	input := &sns.PublishInput{
 		Message:  evt.ToMessage(),
 		TopicArn: &p.topicARN,
-	})
-	if err != nil {
-		fmt.Println(err)
 	}
 
-	fmt.Println(*result.MessageId)
+	result, err := p.svc.Publish(ctx, input)
+	if err != nil {
+		logger.Error(ctx, "error on publish", logger.Fields{
+			"error": err,
+		})
+	}
+	logger.Info(ctx, "event published with success", logger.Fields{
+		"message_id": result.MessageId,
+		"event":      evt,
+	})
 }

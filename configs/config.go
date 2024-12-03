@@ -10,18 +10,16 @@ import (
 )
 
 type Config struct {
-	AppPort         int
-	MySqlDBUser     string
-	MySqlDBPass     string
-	MySqlDBHost     string
-	MySqlDBPort     string
-	MysqlDBName     string
-	AwsAddress      string
-	AwsRegion       string
-	AwsProfile      string
-	AwsID           string
-	AwsSecret       string
-	SnsAccountTopic string
+	AppPort          int
+	MySqlDBUser      string
+	MySqlDBPass      string
+	MySqlDBHost      string
+	MySqlDBPort      string
+	MysqlDBName      string
+	AwsAddress       string
+	AwsRegion        string
+	BalancesSNSTopic string
+	BalancesSQSQueue string
 }
 
 type Option func(*Config)
@@ -33,18 +31,16 @@ func New(options ...Option) *Config {
 	}
 
 	c := &Config{
-		AppPort:         getInt("APP_PORT", 5000),
-		MySqlDBUser:     getString("MYSQL_USER", "admin"),
-		MySqlDBPass:     getString("MYSQL_PASS", "b4l4nc3s"),
-		MySqlDBHost:     getString("MYSQL_HOST", "192.168.49.2"),
-		MySqlDBPort:     getString("MYSQL_PORT", "30306"),
-		MysqlDBName:     getString("MYSQL_NAME", "balances"),
-		AwsAddress:      getString("AWS_ADDRESS", "192.168.49.2"),
-		AwsRegion:       getString("AWS_REGION", "us-east-1"),
-		AwsProfile:      getString("AWS_PROFILE", "localstack"),
-		AwsID:           getString("AWS_ID", "1.0.0"),
-		AwsSecret:       getString("AWS_SECRET", "test"),
-		SnsAccountTopic: getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:account-sns-topic"),
+		AppPort:          getInt("APP_PORT", 5000),
+		MySqlDBUser:      getString("MYSQL_USER", "admin"),
+		MySqlDBPass:      getString("MYSQL_PASS", "b4l4nc3s"),
+		MySqlDBHost:      getString("MYSQL_HOST", "192.168.49.2"),
+		MySqlDBPort:      getString("MYSQL_PORT", "30306"),
+		MysqlDBName:      getString("MYSQL_NAME", "balances"),
+		AwsAddress:       getString("AWS_ADDRESS", "192.168.49.2:30566"),
+		AwsRegion:        getString("AWS_REGION", "us-east-1"),
+		BalancesSNSTopic: getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:account-sns-topic"),
+		BalancesSQSQueue: getString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30566/000000000000/balances-sqs-queue"),
 	}
 
 	for _, opt := range options {
@@ -97,27 +93,10 @@ func (c Config) WithAwsRegion(AwsRegion string) Option {
 		c.AwsRegion = AwsRegion
 	}
 }
-func (c Config) WithAwsProfile(AwsProfile string) Option {
-	return func(c *Config) {
-		c.AwsProfile = AwsProfile
-	}
-}
-
-func (c Config) WithAwsID(AwsID string) Option {
-	return func(c *Config) {
-		c.AwsID = AwsID
-	}
-}
-
-func (c Config) WithAwsSecret(AwsSecret string) Option {
-	return func(c *Config) {
-		c.AwsSecret = AwsSecret
-	}
-}
 
 func (c Config) WithSnsAccountTopic(SnsAccountTopic string) Option {
 	return func(c *Config) {
-		c.SnsAccountTopic = SnsAccountTopic
+		c.BalancesSNSTopic = SnsAccountTopic
 	}
 }
 

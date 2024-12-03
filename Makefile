@@ -9,7 +9,7 @@ worker-run:
 dispatcher-run:
 	go run cmd/dispatcher/main.go
 
-app-build-app:
+app-build:
 	docker build -t clodoaldomarques/balances-api:$(version) -f scripts/docker/app/Dockerfile .
 	docker build -t clodoaldomarques/balances-api:latest -f scripts/docker/app/Dockerfile .
 
@@ -17,7 +17,7 @@ app-push:
 	docker push clodoaldomarques/balances-api:latest
 	docker push clodoaldomarques/balances-api:$(version)
 
-publish: build-app push-app
+publish: app-build app-push
 
 kube-secrets:
 	kubectl create secret generic root-pass --from-literal=password='a1s2d3f4'

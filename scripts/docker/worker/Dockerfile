@@ -1,5 +1,5 @@
 ## build
-FROM golang:1.22 AS build
+FROM golang:1.21 AS build
 
 WORKDIR /app
 
@@ -7,15 +7,15 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-COPY cmd/app/main.go .
-RUN go build -o /balances-api
+COPY cmd/worker/main.go .
+RUN go build -o /balances-worker
 
 ## deploy
 FROM ubuntu AS base
 
 WORKDIR /
 
-COPY --from=build /balances-api /balances-api
+COPY --from=build /balances-worker /balances-worker
 
 #mysql access
 ENV MYSQL_HOST=192.168.49.2
@@ -31,9 +31,9 @@ ENV AWS_PROFILE="localstack"
 ENV AWS_ID="test"
 ENV AWS_PASS="test"
 
-#SnS
-ENV BALANCES_SNS_TOPIC="arn:aws:sns:us-east-1:000000000000:balances-sns-topic"
+#SQS
+ENV BALANCES_SQS_QUEUE="http://192.168.49.2:30566/000000000000/balances-sqs-queue"
 
-EXPOSE 5000
+EXPOSE 5001
 
-ENTRYPOINT [ "/balances-api" ]
+ENTRYPOINT [ "/balances-worker" ]
