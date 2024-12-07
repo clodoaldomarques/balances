@@ -2,11 +2,8 @@ package configs
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strconv"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -25,11 +22,6 @@ type Config struct {
 type Option func(*Config)
 
 func New(options ...Option) *Config {
-	var err error
-	if err = godotenv.Load(); err != nil {
-		log.Fatal(err)
-	}
-
 	c := &Config{
 		AppPort:          getInt("APP_PORT", 5000),
 		MySqlDBUser:      getString("MYSQL_USER", "admin"),
@@ -39,7 +31,7 @@ func New(options ...Option) *Config {
 		MysqlDBName:      getString("MYSQL_NAME", "balances"),
 		AwsAddress:       getString("AWS_ADDRESS", "192.168.49.2:30566"),
 		AwsRegion:        getString("AWS_REGION", "us-east-1"),
-		BalancesSNSTopic: getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:account-sns-topic"),
+		BalancesSNSTopic: getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"),
 		BalancesSQSQueue: getString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30566/000000000000/balances-sqs-queue"),
 	}
 

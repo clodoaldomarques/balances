@@ -2,6 +2,7 @@ package server
 
 import (
 	"balances/internal/app/infra/rest/accounts"
+	"balances/pkg/logger"
 	"net/http"
 
 	"github.com/go-playground/validator"
@@ -33,6 +34,7 @@ func routes(e *echo.Echo) {
 }
 
 func HealthCheck(c echo.Context) error {
+	logger.Info(c.Request().Context(), "health check", logger.Fields{})
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"data": "Server is up and running",
 	})

@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: balances-app
+  labels:
+    com.job.service: balances-app
+    tier: golang
+spec:
+  selector: 
+    matchLabels:
+      com.job.service: balances-app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: 
+        com.job.service: balances-app
+        tier: golang
+    spec:
+      containers:
+        - name: balances-app
+          image: clodoaldomarques/balances-api:1.2.1
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: MYSQL_HOST
+              value: mysql-service
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_DATABASE
+              value: balances
+            - name: MYSQL_USER
+              value: admin
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                 secretKeyRef:
+                   name: balances-pass
+                   key: password               
+            - name: AWS_ADDRESS
+              value: localstack-service:4566
+            - name: AWS_REGION
+              value: us-east-1
+            - name: AWS_PROFILE
+              value: localstack
+            - name: AWS_ID
+              value: test
+            - name: AWS_PASS
+              value: test
+            - name: BALANCES_SNS_TOPIC
+              value: arn:aws:sns:us-east-1:000000000000:balances-sns-topic
+          ports:
+            - name: balances-app
+              containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: balances-app-service
+  labels:
+    com.job.service: balances-app-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 31500
+  selector:
+    com.job.service: balances-app
+    tier: golang
