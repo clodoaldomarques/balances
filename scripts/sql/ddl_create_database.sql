@@ -15,4 +15,4 @@ CREATE TABLE entries(
     org_id varchar(100) not null,
     impacts json not null,
     created_at timestamp default current_timestamp
-)
+);

@@ -52,7 +52,6 @@ spec:
           configMap:
             defaultMode: 420
             name: prometheus-config
-  
         - name: prometheus-storage-volume
           emptyDir: {}
 ---
@@ -70,4 +69,4 @@ spec:
   ports:
     - port: 8080
       targetPort: 9090 
-      nodePort: 30000
+      nodePort: 30006
