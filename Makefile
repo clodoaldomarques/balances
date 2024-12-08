@@ -27,18 +27,12 @@ kube-create:
 	kubectl apply -f scripts/k8s/mysql-service.yaml
 	kubectl apply -f scripts/k8s/localstack-service.yaml
 	kubectl apply -f scripts/k8s/redis-service.yaml
-	kubectl apply -f scripts/k8s/dynamodb-admin-service.yaml
-	kubectl apply -f scripts/k8s/prometheus-service.yaml
-	kubectl apply -f scripts/k8s/grafana-service.yaml
 	kubectl apply -f scripts/k8s/app-service.yaml
 
 kube-delete:
 	kubectl delete -f scripts/k8s/mysql-service.yaml
 	kubectl delete -f scripts/k8s/localstack-service.yaml
 	kubectl delete -f scripts/k8s/redis-service.yaml
-	kubectl delete -f scripts/k8s/dynamodb-admin-service.yaml
-	kubectl delete -f scripts/k8s/prometheus-service.yaml
-	kubectl delete -f scripts/k8s/grafana-service.yaml
 	kubectl delete -f scripts/k8s/app-service.yaml
 
 terraform:
@@ -47,6 +41,9 @@ terraform:
 
 terraform-init:
 	terraform -chdir=scripts/terraform/ init
+
+terraform-destroy:
+	terraform -chdir=scripts/terraform/ destroy
 
 test:
 	go test ./... -coverprofile cover.out

@@ -47,7 +47,6 @@ func buildFields(ctx context.Context, fields Fields) []zapcore.Field {
 
 func loggerConfig() zap.Config {
 	al := zap.NewAtomicLevel()
-	al.UnmarshalText([]byte("INFO"))
 	return zap.Config{
 		Level:       al,
 		Development: false,
@@ -72,8 +71,8 @@ func loggerEncoder() zapcore.EncoderConfig {
 		FunctionKey:    zapcore.OmitKey,
 		StacktraceKey:  "Stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.CapitalColorLevelEncoder,
-		EncodeTime:     zapcore.EpochNanosTimeEncoder,
+		EncodeLevel:    zapcore.CapitalLevelEncoder,
+		EncodeTime:     zapcore.RFC3339NanoTimeEncoder,
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 		EncodeCaller:   zapcore.ShortCallerEncoder,
 	}

@@ -24,4 +24,5 @@ func NewAWSConfig(ctx context.Context) (aws.Config, error) {
 		config.WithRegion(c.AwsRegion),
 		config.WithEndpointResolverWithOptions(customEndpointResolver),
 	)
+
 }

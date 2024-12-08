@@ -4,6 +4,7 @@ import (
 	"balances/internal/app/domain/accounts"
 	"balances/internal/app/infra/database/mysqldb"
 	"balances/internal/app/infra/sns"
+	"balances/pkg/logger"
 	"net/http"
 	"strconv"
 
@@ -14,6 +15,8 @@ func CreateNewAccount(c echo.Context) error {
 	ctx := c.Request().Context()
 	r := mysqldb.NewRepository(ctx)
 	defer r.Close()
+
+	logger.Info(ctx, "create account", logger.Fields{})
 
 	p := sns.NewPublisher(ctx)
 
