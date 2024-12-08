@@ -22,7 +22,7 @@ type Repository struct {
 func NewRepository(ctx context.Context) *Repository {
 	db, err := Connect()
 	if err != nil {
-		logger.Error(ctx, "error on connect to database", logger.Fields{"error": err})
+		logger.Error(ctx, "error on connect to database", logger.Fields{"error": err.Error()})
 		return &Repository{ctx: ctx}
 	}
 
@@ -37,7 +37,7 @@ func (r Repository) SaveNewAccount(ctx context.Context, a accounts.Account) erro
 	acc := buildAccountTable(a)
 	statement, err := r.db.Prepare(INSERT_ACCOUNT)
 	if err != nil {
-		logger.Error(ctx, "error on save new account", logger.Fields{"account": a, "error": err, "sql": INSERT_ACCOUNT})
+		logger.Error(ctx, "error on save new account", logger.Fields{"account": a, "error": err.Error(), "sql": INSERT_ACCOUNT})
 		return err
 	}
 	defer statement.Close()
@@ -60,7 +60,7 @@ func (r Repository) UpdateExistingAccount(ctx context.Context, a accounts.Accoun
 	acc := buildAccountTable(a)
 	statement, err := r.db.Prepare(UPDATE_ACCOUNT)
 	if err != nil {
-		logger.Error(ctx, "error on update existing account", logger.Fields{"account": a, "error": err, "sql": UPDATE_ACCOUNT})
+		logger.Error(ctx, "error on update existing account", logger.Fields{"account": a, "error": err.Error(), "sql": UPDATE_ACCOUNT})
 		return err
 	}
 	defer statement.Close()
@@ -91,7 +91,7 @@ func (r Repository) RetrieveAccountByID(ctx context.Context, accountID int64, or
 		&acc.Version,
 	)
 	if err != nil {
-		logger.Error(ctx, "error on retrieve existing account", logger.Fields{"account": accountID, "error": err, "sql": SELECT_ACCOUNT})
+		logger.Error(ctx, "error on retrieve existing account", logger.Fields{"account": accountID, "error": err.Error(), "sql": SELECT_ACCOUNT})
 		return accounts.Account{}, err
 	}
 	return acc.toEntity(), nil
@@ -100,14 +100,14 @@ func (r Repository) RetrieveAccountByID(ctx context.Context, accountID int64, or
 func (r Repository) SaveEntryAndUpdateAccount(ctx context.Context, e accounts.Entry, a accounts.Account) error {
 	tx, err := r.db.BeginTx(r.ctx, nil)
 	if err != nil {
-		logger.Error(ctx, "error on start new transaction", logger.Fields{"account": a, "entry": e, "error": err})
+		logger.Error(ctx, "error on start new transaction", logger.Fields{"account": a, "entry": e, "error": err.Error()})
 		return err
 	}
 	defer tx.Rollback()
 
 	stat, err := tx.Prepare(INSERT_ENTRIES)
 	if err != nil {
-		logger.Error(ctx, "error on save new entry", logger.Fields{"account": a, "entry": e, "error": err, "sql": INSERT_ENTRIES})
+		logger.Error(ctx, "error on save new entry", logger.Fields{"account": a, "entry": e, "error": err.Error(), "sql": INSERT_ENTRIES})
 		return err
 	}
 	defer stat.Close()
@@ -131,7 +131,7 @@ func (r Repository) SaveEntryAndUpdateAccount(ctx context.Context, e accounts.En
 	acc := buildAccountTable(a)
 	stat, err = tx.Prepare(UPDATE_ACCOUNT)
 	if err != nil {
-		logger.Error(ctx, "error on prepare statement", logger.Fields{"account": a, "error": err, "sql": UPDATE_ACCOUNT})
+		logger.Error(ctx, "error on prepare statement", logger.Fields{"account": a, "error": err.Error(), "sql": UPDATE_ACCOUNT})
 		return err
 	}
 	_, err = stat.Exec(

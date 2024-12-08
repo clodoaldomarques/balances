@@ -12,7 +12,7 @@ import (
 func Connect() (*sql.DB, error) {
 	db, err := sql.Open("mysql", configs.New().GetMySQLConnectionString())
 	if err != nil {
-		logger.Error(context.TODO(), "error on connect database", logger.Fields{"error": err})
+		logger.Fatal(context.TODO(), "error on connect database", logger.Fields{"error": err.Error()})
 		return nil, err
 	}
 	if err = db.Ping(); err != nil {

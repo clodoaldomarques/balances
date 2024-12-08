@@ -29,7 +29,7 @@ func New(options ...Option) *Config {
 		MySqlDBHost:      getString("MYSQL_HOST", "192.168.49.2"),
 		MySqlDBPort:      getString("MYSQL_PORT", "30001"),
 		MysqlDBName:      getString("MYSQL_NAME", "balances"),
-		AwsAddress:       getString("AWS_ADDRESS", "192.168.49.2:30002"),
+		AwsAddress:       getString("AWS_ADDRESS", "http://192.168.49.2:30002"),
 		AwsRegion:        getString("AWS_REGION", "us-east-1"),
 		BalancesSNSTopic: getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"),
 		BalancesSQSQueue: getString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30002/000000000000/balances-sqs-queue"),

@@ -33,7 +33,7 @@ func (p Publisher) Emit(ctx context.Context, evt events.Event) {
 	result, err := p.svc.Publish(ctx, input)
 	if err != nil {
 		logger.Error(ctx, "error on publish", logger.Fields{
-			"error": err,
+			"error": err.Error(),
 		})
 	}
 	logger.Info(ctx, "event published with success", logger.Fields{

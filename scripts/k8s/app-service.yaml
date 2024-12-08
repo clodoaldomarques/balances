@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: balances-app
-          image: clodoaldomarques/balances-api:1.2.9
+          image: clodoaldomarques/balances-api:1.2.11
           imagePullPolicy: "IfNotPresent"
           env:
             - name: MYSQL_HOST

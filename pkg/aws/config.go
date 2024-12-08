@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 )
 
 func NewAWSConfig(ctx context.Context) (aws.Config, error) {
@@ -22,6 +23,7 @@ func NewAWSConfig(ctx context.Context) (aws.Config, error) {
 	return config.LoadDefaultConfig(
 		ctx,
 		config.WithRegion(c.AwsRegion),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider("test", "test", "")),
 		config.WithEndpointResolverWithOptions(customEndpointResolver),
 	)
 

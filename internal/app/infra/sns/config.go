@@ -11,7 +11,7 @@ import (
 func NewSNSClient(ctx context.Context) *sns.Client {
 	c, err := aws.NewAWSConfig(ctx)
 	if err != nil {
-		logger.Error(ctx, "error on connect to AWS", logger.Fields{"error": err})
+		logger.Fatal(ctx, "error on connect to AWS", logger.Fields{"error": err})
 	}
 	return sns.NewFromConfig(c)
 }
