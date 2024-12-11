@@ -45,6 +45,8 @@ terraform-init:
 terraform-destroy:
 	terraform -chdir=scripts/terraform/ destroy
 
+minikube: kube-secrets kube-create terraform-init
+
 test:
 	go test ./... -coverprofile cover.out
 	go tool cover -html=cover.out

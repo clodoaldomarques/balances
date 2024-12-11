@@ -4,27 +4,16 @@ import (
 	"balances/configs"
 	"context"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-func NewAWSConfig(ctx context.Context) (aws.Config, error) {
+func NewAWSConfig(ctx context.Context) (*session.Session, error) {
 	c := configs.New()
-
-	customEndpointResolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
-		return aws.Endpoint{
-			PartitionID:   "aws",
-			URL:           c.AwsAddress,
-			SigningRegion: region,
-		}, nil
+	return session.NewSession(&aws.Config{
+		Region:      aws.String(c.AwsRegion),
+		Credentials: credentials.NewSharedCredentials("", c.AwsProfile),
+		Endpoint:    aws.String(c.AwsAddress),
 	})
-
-	return config.LoadDefaultConfig(
-		ctx,
-		config.WithRegion(c.AwsRegion),
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider("test", "test", "")),
-		config.WithEndpointResolverWithOptions(customEndpointResolver),
-	)
-
 }

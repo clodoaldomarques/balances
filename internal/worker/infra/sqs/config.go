@@ -5,13 +5,13 @@ import (
 	"context"
 	"log"
 
-	"github.com/aws/aws-sdk-go-v2/service/sqs"
+	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
-func NewSQSClient(ctx context.Context) *sqs.Client {
-	c, err := aws.NewAWSConfig(ctx)
+func NewSQSClient(ctx context.Context) *sqs.SQS {
+	sess, err := aws.NewAWSConfig(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return sqs.NewFromConfig(c)
+	return sqs.New(sess)
 }

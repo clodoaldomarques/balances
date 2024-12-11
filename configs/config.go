@@ -7,32 +7,38 @@ import (
 )
 
 type Config struct {
-	AppPort          int
-	MySqlDBUser      string
-	MySqlDBPass      string
-	MySqlDBHost      string
-	MySqlDBPort      string
-	MysqlDBName      string
-	AwsAddress       string
-	AwsRegion        string
-	BalancesSNSTopic string
-	BalancesSQSQueue string
+	AppPort            int
+	MySqlDBUser        string
+	MySqlDBPass        string
+	MySqlDBHost        string
+	MySqlDBPort        string
+	MysqlDBName        string
+	AwsAddress         string
+	AwsRegion          string
+	AwsProfile         string
+	AwsAccessKeyID     string
+	AwsSecretAccessKey string
+	BalancesSNSTopic   string
+	BalancesSQSQueue   string
 }
 
 type Option func(*Config)
 
 func New(options ...Option) *Config {
 	c := &Config{
-		AppPort:          getInt("APP_PORT", 5000),
-		MySqlDBUser:      getString("MYSQL_USER", "admin"),
-		MySqlDBPass:      getString("MYSQL_PASS", "b4l4nc3s"),
-		MySqlDBHost:      getString("MYSQL_HOST", "192.168.49.2"),
-		MySqlDBPort:      getString("MYSQL_PORT", "30001"),
-		MysqlDBName:      getString("MYSQL_NAME", "balances"),
-		AwsAddress:       getString("AWS_ADDRESS", "http://192.168.49.2:30002"),
-		AwsRegion:        getString("AWS_REGION", "us-east-1"),
-		BalancesSNSTopic: getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"),
-		BalancesSQSQueue: getString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30002/000000000000/balances-sqs-queue"),
+		AppPort:            getInt("APP_PORT", 5000),
+		MySqlDBUser:        getString("MYSQL_USER", "admin"),
+		MySqlDBPass:        getString("MYSQL_PASS", "b4l4nc3s"),
+		MySqlDBHost:        getString("MYSQL_HOST", "192.168.49.2"),
+		MySqlDBPort:        getString("MYSQL_PORT", "30001"),
+		MysqlDBName:        getString("MYSQL_NAME", "balances"),
+		AwsAddress:         getString("AWS_ADDRESS", "http://192.168.49.2:30002"),
+		AwsRegion:          getString("AWS_REGION", "us-east-1"),
+		AwsProfile:         getString("AWS_PROFILE", "localstack"),
+		AwsAccessKeyID:     getString("AWS_ID", "test"),
+		AwsSecretAccessKey: getString("AWS_PASS", "test"),
+		BalancesSNSTopic:   getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"),
+		BalancesSQSQueue:   getString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30002/000000000000/balances-sqs-queue"),
 	}
 
 	for _, opt := range options {
