@@ -25,15 +25,15 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                  secretKeyRef:
-                   name: root-pass
-                   key: password
+                   name: mysql-secrets
+                   key: root
             - name: MYSQL_USER
               value: admin
             - name: MYSQL_PASSWORD
               valueFrom:
                  secretKeyRef:
-                   name: balances-pass
-                   key: password                   
+                   name: mysql-secrets
+                   key: balances                   
             - name: MYSQL_DATABASE
               value: balances
           ports:

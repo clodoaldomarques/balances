@@ -1,5 +1,3 @@
-run: app-run worker-run dispatcher-run
-
 app-run:
 	go run cmd/app/main.go
 
@@ -20,8 +18,8 @@ app-push:
 publish: app-build app-push
 
 kube-secrets:
-	kubectl create secret generic root-pass --from-literal=password='a1s2d3f4'
-	kubectl create secret generic balances-pass --from-literal=password='b4l4nc3s'
+	kubectl create secret generic mysql-secret --from-literal=root='a1s2d3f4' --from-literal=balances='b4l4nc3s'
+	kubectl create secret generic registry-creds-ecr --from-literal=AWS_ACCESS_KEY_ID='test' --from-literal=AWS_SECRET_ACCESS_KEY='test'
 
 kube-create:
 	kubectl apply -f scripts/k8s/mysql-service.yaml

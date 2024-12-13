@@ -5,13 +5,13 @@ import (
 	"balances/pkg/logger"
 	"context"
 
-	"github.com/aws/aws-sdk-go/service/sns"
+	"github.com/aws/aws-sdk-go-v2/service/sns"
 )
 
-func NewSNSClient(ctx context.Context) *sns.SNS {
-	sess, err := aws.NewAWSConfig(ctx)
+func NewSNSClient(ctx context.Context) *sns.Client {
+	cfg, err := aws.NewAWSConfig(ctx)
 	if err != nil {
 		logger.Fatal(ctx, err.Error(), logger.Fields{})
 	}
-	return sns.New(sess)
+	return sns.NewFromConfig(cfg)
 }

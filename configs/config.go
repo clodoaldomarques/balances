@@ -7,92 +7,88 @@ import (
 )
 
 type Config struct {
-	AppPort            int
-	MySqlDBUser        string
-	MySqlDBPass        string
-	MySqlDBHost        string
-	MySqlDBPort        string
-	MysqlDBName        string
-	AwsAddress         string
-	AwsRegion          string
-	AwsProfile         string
-	AwsAccessKeyID     string
-	AwsSecretAccessKey string
-	BalancesSNSTopic   string
-	BalancesSQSQueue   string
+	AppPort          int
+	MySqlDBUser      string
+	MySqlDBPass      string
+	MySqlDBHost      string
+	MySqlDBPort      string
+	MysqlDBName      string
+	AwsAddress       string
+	AwsRegion        string
+	AwsProfile       string
+	BalancesSNSTopic string
+	BalancesSQSQueue string
 }
 
 type Option func(*Config)
 
 func New(options ...Option) *Config {
 	c := &Config{
-		AppPort:            getInt("APP_PORT", 5000),
-		MySqlDBUser:        getString("MYSQL_USER", "admin"),
-		MySqlDBPass:        getString("MYSQL_PASS", "b4l4nc3s"),
-		MySqlDBHost:        getString("MYSQL_HOST", "192.168.49.2"),
-		MySqlDBPort:        getString("MYSQL_PORT", "30001"),
-		MysqlDBName:        getString("MYSQL_NAME", "balances"),
-		AwsAddress:         getString("AWS_ADDRESS", "http://192.168.49.2:30002"),
-		AwsRegion:          getString("AWS_REGION", "us-east-1"),
-		AwsProfile:         getString("AWS_PROFILE", "localstack"),
-		AwsAccessKeyID:     getString("AWS_ID", "test"),
-		AwsSecretAccessKey: getString("AWS_PASS", "test"),
-		BalancesSNSTopic:   getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"),
-		BalancesSQSQueue:   getString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30002/000000000000/balances-sqs-queue"),
+		AppPort:          getInt("APP_PORT", 8080),
+		MySqlDBUser:      getString("MYSQL_USER", "admin"),
+		MySqlDBPass:      getString("MYSQL_PASS", "b4l4nc3s"),
+		MySqlDBHost:      getString("MYSQL_HOST", "192.168.49.2"),
+		MySqlDBPort:      getString("MYSQL_PORT", "30001"),
+		MysqlDBName:      getString("MYSQL_NAME", "balances"),
+		AwsAddress:       getString("AWS_ADDRESS", "http://192.168.49.2:30002"),
+		AwsRegion:        getString("AWS_REGION", "us-east-1"),
+		AwsProfile:       getString("AWS_PROFILE", "default"),
+		BalancesSNSTopic: getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"),
+		BalancesSQSQueue: getString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30002/000000000000/balances-sqs-queue"),
 	}
 
-	for _, opt := range options {
-		opt(c)
+	for _, optFunc := range options {
+		optFunc(c)
 	}
 
 	return c
 }
 
-func (c Config) WithAppPort(appPort int) Option {
+func WithAppPort(appPort int) Option {
 	return func(c *Config) {
 		c.AppPort = appPort
 	}
 }
 
-func (c Config) WithMySqlDBUser(mySqlDBUser string) Option {
+func WithMySqlDBUser(mySqlDBUser string) Option {
 	return func(c *Config) {
 		c.MySqlDBUser = mySqlDBUser
 	}
 }
 
-func (c Config) WithMySqlDBPass(MySqlDBPass string) Option {
+func WithMySqlDBPass(MySqlDBPass string) Option {
 	return func(c *Config) {
 		c.MySqlDBPass = MySqlDBPass
 	}
 }
 
-func (c Config) WithMySqlDBHost(MySqlDBHost string) Option {
+func WithMySqlDBHost(MySqlDBHost string) Option {
 	return func(c *Config) {
 		c.MySqlDBHost = MySqlDBHost
 	}
 }
-func (c Config) WithMySqlDBPort(MySqlDBPort string) Option {
+func WithMySqlDBPort(MySqlDBPort string) Option {
 	return func(c *Config) {
 		c.MySqlDBPort = MySqlDBPort
 	}
 }
-func (c Config) WithMysqlDBName(MysqlDBName string) Option {
+func WithMysqlDBName(MysqlDBName string) Option {
 	return func(c *Config) {
 		c.MysqlDBName = MysqlDBName
 	}
 }
-func (c Config) WithAwsAddress(AwsAddress string) Option {
+func WithAwsAddress(AwsAddress string) Option {
 	return func(c *Config) {
 		c.AwsAddress = AwsAddress
 	}
 }
-func (c Config) WithAwsRegion(AwsRegion string) Option {
+func WithAwsRegion(AwsRegion string) Option {
 	return func(c *Config) {
 		c.AwsRegion = AwsRegion
 	}
 }
 
-func (c Config) WithSnsAccountTopic(SnsAccountTopic string) Option {
+func WithSnsAccountTopic(SnsAccountTopic string) Option {
 	return func(c *Config) {
 		c.BalancesSNSTopic = SnsAccountTopic
 	}

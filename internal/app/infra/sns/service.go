@@ -6,12 +6,12 @@ import (
 	"balances/pkg/logger"
 	"context"
 
-	"github.com/aws/aws-sdk-go/service/sns"
+	"github.com/aws/aws-sdk-go-v2/service/sns"
 )
 
 type Publisher struct {
 	ctx      context.Context
-	svc      *sns.SNS
+	svc      *sns.Client
 	topicARN string
 }
 
@@ -30,7 +30,7 @@ func (p Publisher) Emit(ctx context.Context, evt events.Event) {
 		TopicArn: &p.topicARN,
 	}
 
-	result, err := p.svc.PublishWithContext(ctx, input)
+	result, err := p.svc.Publish(ctx, input)
 	if err != nil {
 		logger.Error(ctx, "error on publish", logger.Fields{
 			"error": err.Error(),
