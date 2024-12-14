@@ -16,6 +16,8 @@ type Config struct {
 	AwsAddress       string
 	AwsRegion        string
 	AwsProfile       string
+	AccessKeyID      string
+	SecretAccessKey  string
 	BalancesSNSTopic string
 	BalancesSQSQueue string
 }
@@ -32,7 +34,9 @@ func New(options ...Option) *Config {
 		MysqlDBName:      getString("MYSQL_NAME", "balances"),
 		AwsAddress:       getString("AWS_ADDRESS", "http://192.168.49.2:30002"),
 		AwsRegion:        getString("AWS_REGION", "us-east-1"),
-		AwsProfile:       getString("AWS_PROFILE", "default"),
+		AwsProfile:       getString("AWS_PROFILE", "localstack"),
+		AccessKeyID:      getString("", "test"),
+		SecretAccessKey:  getString("", "test"),
 		BalancesSNSTopic: getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"),
 		BalancesSQSQueue: getString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30002/000000000000/balances-sqs-queue"),
 	}

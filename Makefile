@@ -18,7 +18,7 @@ app-push:
 publish: app-build app-push
 
 kube-secrets:
-	kubectl create secret generic mysql-secret --from-literal=root='a1s2d3f4' --from-literal=balances='b4l4nc3s'
+	kubectl create secret generic mysql-secrets --from-literal=root='a1s2d3f4' --from-literal=balances='b4l4nc3s'
 	kubectl create secret generic registry-creds-ecr --from-literal=AWS_ACCESS_KEY_ID='test' --from-literal=AWS_SECRET_ACCESS_KEY='test'
 
 kube-create:

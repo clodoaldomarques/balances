@@ -9,7 +9,7 @@ import (
 )
 
 func NewSNSClient(ctx context.Context) *sns.Client {
-	cfg, err := aws.NewAWSConfig(ctx)
+	cfg, err := aws.NewCustomConfig(ctx)
 	if err != nil {
 		logger.Fatal(ctx, err.Error(), logger.Fields{})
 	}
