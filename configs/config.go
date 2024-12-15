@@ -15,7 +15,6 @@ type Config struct {
 	MysqlDBName      string
 	AwsAddress       string
 	AwsRegion        string
-	AwsProfile       string
 	AccessKeyID      string
 	SecretAccessKey  string
 	BalancesSNSTopic string
@@ -26,19 +25,18 @@ type Option func(*Config)
 
 func New(options ...Option) *Config {
 	c := &Config{
-		AppPort:          getInt("APP_PORT", 8080),
-		MySqlDBUser:      getString("MYSQL_USER", "admin"),
-		MySqlDBPass:      getString("MYSQL_PASS", "b4l4nc3s"),
-		MySqlDBHost:      getString("MYSQL_HOST", "192.168.49.2"),
-		MySqlDBPort:      getString("MYSQL_PORT", "30001"),
-		MysqlDBName:      getString("MYSQL_NAME", "balances"),
-		AwsAddress:       getString("AWS_ADDRESS", "http://192.168.49.2:30002"),
-		AwsRegion:        getString("AWS_REGION", "us-east-1"),
-		AwsProfile:       getString("AWS_PROFILE", "localstack"),
-		AccessKeyID:      getString("", "test"),
-		SecretAccessKey:  getString("", "test"),
-		BalancesSNSTopic: getString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"),
-		BalancesSQSQueue: getString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30002/000000000000/balances-sqs-queue"),
+		AppPort:          GetInt("APP_PORT", 8080),
+		MySqlDBUser:      GetString("MYSQL_USER", "admin"),
+		MySqlDBPass:      GetString("MYSQL_PASS", "b4l4nc3s"),
+		MySqlDBHost:      GetString("MYSQL_HOST", "192.168.49.2"),
+		MySqlDBPort:      GetString("MYSQL_PORT", "30001"),
+		MysqlDBName:      GetString("MYSQL_NAME", "balances"),
+		AwsAddress:       GetString("AWS_ADDRESS", "http://192.168.49.2:30002"),
+		AwsRegion:        GetString("AWS_REGION", "us-east-1"),
+		AccessKeyID:      GetString("AWS_ACCESS_KEY_ID", "test"),
+		SecretAccessKey:  GetString("AWS_SECRET_ACCESS_KEY", "test"),
+		BalancesSNSTopic: GetString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"),
+		BalancesSQSQueue: GetString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30002/000000000000/balances-sqs-queue"),
 	}
 
 	for _, optFunc := range options {
@@ -108,14 +106,14 @@ func (c Config) GetMySQLConnectionString() string {
 	)
 }
 
-func getString(env string, def string) string {
+func GetString(env string, def string) string {
 	if e := os.Getenv(env); e != "" {
 		return e
 	}
 	return def
 }
 
-func getInt(env string, def int) int {
+func GetInt(env string, def int) int {
 	i, err := strconv.Atoi(os.Getenv(env))
 	if err != nil {
 		return def

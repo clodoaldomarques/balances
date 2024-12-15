@@ -1,7 +1,3 @@
-resource "aws_sns_topic" "balances-sns-topic" {
-  name = "balances-sns-topic"
-}
-
 resource "aws_sqs_queue" "balances-sqs-queue" {
   name = "balances-sqs-queue"
 }

@@ -17,9 +17,10 @@ spec:
         com.job.service: balances-app
         tier: golang
     spec:
+      serviceAccountName: default
       containers:
         - name: balances-app
-          image: clodoaldomarques/balances-api:1.2.27
+          image: clodoaldomarques/balances-api:1.2.34
           imagePullPolicy: "IfNotPresent"
           env:
             - name: MYSQL_HOST
@@ -36,9 +37,17 @@ spec:
                    name: mysql-secrets
                    key: balances               
             - name: AWS_ADDRESS
-              value: "localstack-service:4566"
-            - name: AWS_PROFILE
-              value: "default"
+              value: "http://localstack-service:4566"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                 secretKeyRef:
+                   name: aws-secrets
+                   key: AWS_ACCESS_KEY_ID 
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                 secretKeyRef:
+                   name: aws-secrets
+                   key: AWS_SECRET_ACCESS_KEY 
             - name: AWS_REGION
               value: "us-east-1"              
             - name: BALANCES_SNS_TOPIC

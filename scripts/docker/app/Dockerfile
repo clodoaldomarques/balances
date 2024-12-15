@@ -27,9 +27,8 @@ ENV MYSQL_PASS=b4l4nc3s
 #AWS 
 ENV AWS_ADDRESS="http://192.168.49.2:4566"
 ENV AWS_REGION="us-east-1"
-ENV AWS_PROFILE="localstack"
-ENV AWS_ID="test"
-ENV AWS_PASS="test"
+ENV AWS_ACCESS_KEY_ID="test"
+ENV AWS_SECRET_ACCESS_KEY="test"
 
 #SnS
 ENV BALANCES_SNS_TOPIC="arn:aws:sns:us-east-1:000000000000:balances-sns-topic"

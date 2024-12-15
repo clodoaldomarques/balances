@@ -32,6 +32,7 @@ spec:
       labels:
         com.job.service: localstack-deployment
     spec:
+      serviceAccountName: default
       containers:
         - name: localstack-main
           image: localstack/localstack:stable
@@ -40,12 +41,12 @@ spec:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                  secretKeyRef:
-                   name: registry-creds-ecr
+                   name: aws-secrets
                    key: AWS_ACCESS_KEY_ID 
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                  secretKeyRef:
-                   name: registry-creds-ecr
+                   name: aws-secrets
                    key: AWS_SECRET_ACCESS_KEY 
             - name: AWS_DEFAULT_REGION
               value: 'us-east-1'                            
@@ -102,19 +103,10 @@ spec:
             - name: localstack-storage 
               mountPath: /var/lib/localstack
       restartPolicy: Always
-      serviceAccountName: localstack-account
       volumes:
         - name: localstack-storage
           persistentVolumeClaim:
             claimName: localstack-claim
----
-# service account
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: localstack-account
-  labels:
-    com.job.service: localstack-service-account
 ---
 # service
 apiVersion: v1
