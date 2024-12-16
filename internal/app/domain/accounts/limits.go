@@ -25,6 +25,11 @@ func validateChangeTotalLimit(a *Account, newValue decimal.Decimal) error {
 	if a.Limits[MaxLimit].LessThan(newValue) {
 		return ErrValidateLimit{msg: "new limit can not great than max limit"}
 	}
+
+	limit := newValue.Add(a.Balances[Available])
+	if limit.LessThan(decimal.Zero) {
+		return ErrValidateLimit{msg: "new limit can not less than available balance"}
+	}
 	return nil
 }
 

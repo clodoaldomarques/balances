@@ -174,7 +174,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Nil(t, e)
-				assert.Equal(t, decimal.NewFromInt(200), a.Balances[AvailableBalance])
+				assert.Equal(t, decimal.NewFromInt(200), a.Balances[Available])
 				assert.Equal(t, int64(2), a.Version)
 			},
 		},
@@ -195,7 +195,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Nil(t, e)
-				assert.Equal(t, decimal.NewFromInt(200), a.Balances[SavingsBalance])
+				assert.Equal(t, decimal.NewFromInt(200), a.Balances[Savings])
 				assert.Equal(t, int64(2), a.Version)
 			},
 		},
@@ -216,7 +216,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Nil(t, e)
-				assert.Equal(t, decimal.NewFromInt(150), a.Balances[BlockedBalance])
+				assert.Equal(t, decimal.NewFromInt(150), a.Balances[Blocked])
 				assert.Equal(t, int64(2), a.Version)
 			},
 		},
@@ -237,7 +237,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Nil(t, e)
-				assert.Equal(t, decimal.NewFromInt(50), a.Balances[AvailableBalance])
+				assert.Equal(t, decimal.NewFromInt(50), a.Balances[Available])
 				assert.Equal(t, int64(2), a.Version)
 			},
 		},
@@ -258,7 +258,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Nil(t, e)
-				assert.Equal(t, decimal.NewFromInt(50), a.Balances[SavingsBalance])
+				assert.Equal(t, decimal.NewFromInt(50), a.Balances[Savings])
 				assert.Equal(t, int64(2), a.Version)
 			},
 		},
@@ -279,7 +279,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Nil(t, e)
-				assert.Equal(t, decimal.NewFromInt(50), a.Balances[BlockedBalance])
+				assert.Equal(t, decimal.NewFromInt(50), a.Balances[Blocked])
 				assert.Equal(t, int64(2), a.Version)
 			},
 		},
@@ -306,8 +306,8 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Nil(t, e)
-				assert.Equal(t, decimal.NewFromInt(50), a.Balances[AvailableBalance])
-				assert.Equal(t, decimal.NewFromInt(150), a.Balances[BlockedBalance])
+				assert.Equal(t, decimal.NewFromInt(50), a.Balances[Available])
+				assert.Equal(t, decimal.NewFromInt(150), a.Balances[Blocked])
 				assert.Equal(t, int64(2), a.Version)
 			},
 		},
@@ -343,7 +343,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 						Balance:   "savings_balance",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(200),
-						Rules:     []string{ConsiderSavingsBalance},
+						Rules:     []string{ConsiderAvailableSavings},
 					},
 				}
 			},
@@ -484,9 +484,9 @@ func buildAccount() Account {
 			OverdraftLimit: decimal.NewFromInt(50),
 		},
 		Balances: map[string]decimal.Decimal{
-			AvailableBalance: decimal.NewFromInt(100),
-			SavingsBalance:   decimal.NewFromInt(100),
-			BlockedBalance:   decimal.NewFromInt(100),
+			Available: decimal.NewFromInt(100),
+			Savings:   decimal.NewFromInt(100),
+			Blocked:   decimal.NewFromInt(100),
 		},
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),

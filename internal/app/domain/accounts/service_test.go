@@ -375,7 +375,7 @@ func buildEntry(amount decimal.Decimal) Entry {
 				Balance:   "savings_balance",
 				Operation: "DEBIT",
 				Amount:    amount,
-				Rules:     []string{ConsiderSavingsBalance},
+				Rules:     []string{ConsiderAvailableSavings},
 			},
 			{
 				Balance:   "blocked_balance",

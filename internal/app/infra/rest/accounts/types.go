@@ -12,10 +12,10 @@ import (
 
 var (
 	validLimits     = []string{accounts.MaxLimit, accounts.TotalLimit, accounts.OverdraftLimit}
-	validBalances   = []string{accounts.AvailableBalance, accounts.SavingsBalance, accounts.BlockedBalance}
+	validBalances   = []string{accounts.Available, accounts.Savings, accounts.Blocked}
 	validOperations = []string{accounts.Credit, accounts.Debit}
 	validStatus     = []string{string(accounts.Active), string(accounts.Inative), string(accounts.OnlyCredit), string(accounts.OnlyDebit)}
-	validRules      = []string{accounts.ConsiderAvailableBalance, accounts.ConsiderBlockedBalance, accounts.ConsiderSavingsBalance}
+	validRules      = []string{accounts.ConsiderAvailableBalance, accounts.ConsiderBlockedBalance, accounts.ConsiderAvailableSavings}
 )
 
 type EntityRequest interface {
