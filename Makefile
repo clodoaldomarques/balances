@@ -19,7 +19,7 @@ publish: app-build app-push
 
 kube-secrets:
 	kubectl create secret generic mysql-secrets --from-literal=root='a1s2d3f4' --from-literal=balances='b4l4nc3s'
-	kubectl create secret generic registry-creds-ecr --from-literal=AWS_ACCESS_KEY_ID='test' --from-literal=AWS_SECRET_ACCESS_KEY='test'
+	kubectl create secret generic aws-secrets --from-literal=AWS_ACCESS_KEY_ID='test' --from-literal=AWS_SECRET_ACCESS_KEY='test' --from-literal=AWS_SESSION_TOKEN='' --from-literal=aws-account='000000000000' --from-literal=aws-assume-role='' --from-literal=aws-region='us-east-1'
 
 kube-create:
 	kubectl apply -f scripts/k8s/mysql-service.yaml
@@ -43,7 +43,7 @@ terraform-init:
 terraform-destroy:
 	terraform -chdir=scripts/terraform/ destroy
 
-minikube: kube-secrets kube-create terraform-init
+minikube: kube-secrets kube-create terraform
 
 test:
 	go test ./... -coverprofile cover.out

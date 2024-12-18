@@ -20,8 +20,7 @@ spec:
       serviceAccountName: default
       containers:
         - name: balances-app
-          image: clodoaldomarques/balances-api:1.2.34
-          imagePullPolicy: "IfNotPresent"
+          image: clodoaldomarques/balances-api:latest
           env:
             - name: MYSQL_HOST
               value: "mysql-service"

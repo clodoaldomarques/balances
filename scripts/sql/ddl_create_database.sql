@@ -1,4 +1,4 @@
-CREATE TABLE accounts(
+IF NOT EXISTS CREATE TABLE accounts(
     account_id bigint primary key,
     org_id varchar(100) not null,
     limits json not null,
@@ -9,7 +9,7 @@ CREATE TABLE accounts(
     version bigint not null default 1
 );
 
-CREATE TABLE entries(
+IF NOT EXISTS CREATE TABLE entries(
     tracking_id varchar(36) not null primary key,
     account_id bigint not null,
     org_id varchar(100) not null,
