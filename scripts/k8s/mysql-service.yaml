@@ -1,3 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init-script
+data:
+  init-db.sql: |
+    -- Criação de duas bases de dados
+    CREATE DATABASE IF NOT EXISTS balances;
+    CREATE DATABASE IF NOT EXISTS worker;
+
+    -- Criação de um usuário e concessão de privilégios
+    GRANT ALL PRIVILEGES ON balances.* TO 'admin'@'%';
+    GRANT ALL PRIVILEGES ON worker.* TO 'admin'@'%';
+    FLUSH PRIVILEGES;
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,8 +38,6 @@ spec:
           image: mysql
           imagePullPolicy: "IfNotPresent"
           env:
-            - name: MYSQL_DATABASE
-              value: balances
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                  secretKeyRef:
@@ -43,10 +56,15 @@ spec:
           volumeMounts:
             - name: mysql-storage
               mountPath: /var/lib/mysql
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
       volumes:
         - name: mysql-storage
           persistentVolumeClaim:
-            claimName: mysql-pv-claim     
+            claimName: mysql-pv-claim
+        - name: mysql-initdb
+          configMap:
+            name: mysql-init-script    
 ---
 apiVersion: v1
 kind: Service
