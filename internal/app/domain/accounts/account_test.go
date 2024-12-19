@@ -165,7 +165,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "available_balance",
+						Balance:   "available",
 						Operation: "CREDIT",
 						Amount:    decimal.NewFromInt(100),
 						Rules:     []string{},
@@ -186,7 +186,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "savings_balance",
+						Balance:   "savings",
 						Operation: "CREDIT",
 						Amount:    decimal.NewFromInt(100),
 						Rules:     []string{},
@@ -207,7 +207,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "blocked_balance",
+						Balance:   "blocked",
 						Operation: "CREDIT",
 						Amount:    decimal.NewFromInt(50),
 						Rules:     []string{},
@@ -228,7 +228,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "available_balance",
+						Balance:   "available",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(50),
 						Rules:     []string{"consider_available_balance"},
@@ -242,17 +242,17 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 		},
 		{
-			name: "debit in available balance with sucess",
+			name: "debit in savings with sucess",
 			setup: func() Account {
 				return buildAccount()
 			},
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "savings_balance",
+						Balance:   "savings",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(50),
-						Rules:     []string{"consider_savings_balance"},
+						Rules:     []string{ConsiderAvailableSavings},
 					},
 				}
 			},
@@ -263,14 +263,14 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 		},
 		{
-			name: "debit in blocked balance with sucess",
+			name: "debit in blocked with sucess",
 			setup: func() Account {
 				return buildAccount()
 			},
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "blocked_balance",
+						Balance:   "blocked",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(50),
 						Rules:     []string{ConsiderBlockedBalance},
@@ -291,13 +291,13 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "available_balance",
+						Balance:   "available",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(50),
 						Rules:     []string{ConsiderAvailableBalance},
 					},
 					{
-						Balance:   "blocked_balance",
+						Balance:   "blocked",
 						Operation: "CREDIT",
 						Amount:    decimal.NewFromInt(50),
 						Rules:     []string{},
@@ -319,9 +319,9 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "available_balance",
+						Balance:   "available",
 						Operation: "DEBIT",
-						Amount:    decimal.NewFromInt(200),
+						Amount:    decimal.NewFromInt(201),
 						Rules:     []string{ConsiderAvailableBalance},
 					},
 				}
@@ -340,7 +340,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "savings_balance",
+						Balance:   "savings",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(200),
 						Rules:     []string{ConsiderAvailableSavings},
@@ -361,7 +361,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "blocked_balance",
+						Balance:   "blocked",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(200),
 						Rules:     []string{ConsiderBlockedBalance},
@@ -384,7 +384,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "blocked_balance",
+						Balance:   "blocked",
 						Operation: "DEBIT",
 						Amount:    decimal.NewFromInt(50),
 						Rules:     []string{ConsiderBlockedBalance},
@@ -393,7 +393,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "invalid operation: DEBIT, balance: blocked_balance, amount: 50", e.Error())
+				assert.Equal(t, "invalid operation: DEBIT, balance: blocked, amount: 50", e.Error())
 
 			},
 		},
@@ -407,7 +407,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "blocked_balance",
+						Balance:   "blocked",
 						Operation: "CREDIT",
 						Amount:    decimal.NewFromInt(50),
 						Rules:     []string{},
@@ -416,7 +416,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "invalid operation: CREDIT, balance: blocked_balance, amount: 50", e.Error())
+				assert.Equal(t, "invalid operation: CREDIT, balance: blocked, amount: 50", e.Error())
 
 			},
 		},
@@ -430,7 +430,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "blocked_balance",
+						Balance:   "blocked",
 						Operation: "CREDIT",
 						Amount:    decimal.NewFromInt(50),
 						Rules:     []string{},
@@ -439,7 +439,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "invalid operation: CREDIT, balance: blocked_balance, amount: 50", e.Error())
+				assert.Equal(t, "invalid operation: CREDIT, balance: blocked, amount: 50", e.Error())
 
 			},
 		},
@@ -451,7 +451,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			args: func() []Impact {
 				return []Impact{
 					{
-						Balance:   "blocked_balance",
+						Balance:   "blocked",
 						Operation: "CREDIT",
 						Amount:    decimal.NewFromInt(50),
 						Rules:     []string{ConsiderAvailableBalance},
@@ -460,7 +460,7 @@ func TestAccount_ChangeBalances(t *testing.T) {
 			},
 			want: func(t *testing.T, a Account, e error) {
 				assert.Error(t, e)
-				assert.Equal(t, "invalid operation: CREDIT, balance: blocked_balance, amount: 50", e.Error())
+				assert.Equal(t, "invalid operation: CREDIT, balance: blocked, amount: 50", e.Error())
 
 			},
 		},
