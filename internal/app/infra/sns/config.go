@@ -12,10 +12,9 @@ func NewSNSClient(ctx context.Context) *sns.Client {
 	cfg, err := aws.NewCustomConfig(ctx)
 	if err != nil {
 		logger.Fatal(ctx, "falha ao carregar configuração:", logger.Fields{
-			"error":       err.Error(),
-			"AwsRegion":   cfg.Region,
-			"AwsAddress":  cfg.BaseEndpoint,
-			"Credentials": cfg.Credentials,
+			"error":      err.Error(),
+			"AwsRegion":  cfg.Region,
+			"AwsAddress": cfg.BaseEndpoint,
 		})
 	}
 	return sns.NewFromConfig(cfg)

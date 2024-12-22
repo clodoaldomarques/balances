@@ -5,7 +5,7 @@
 package accounts
 
 import (
-	events "balances/internal/app/domain/events"
+	events "balances/internal/shared/domain/events"
 	context "context"
 	reflect "reflect"
 

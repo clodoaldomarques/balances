@@ -24,11 +24,10 @@ func NewCustomCredentials(c *configs.Config) aws.CredentialsProvider {
 }
 
 func NewCustomConfig(ctx context.Context) (aws.Config, error) {
-	c := configs.New()
 	cfg, err := config.LoadDefaultConfig(ctx,
-		config.WithRegion(c.AwsRegion),
-		config.WithBaseEndpoint(c.AwsAddress),
-		config.WithCredentialsProvider(NewCustomCredentials(c)),
+		config.WithRegion(configs.New().AwsRegion),
+		config.WithBaseEndpoint(configs.New().AwsAddress),
+		config.WithCredentialsProvider(NewCustomCredentials(configs.New())),
 	)
 
 	if err != nil {

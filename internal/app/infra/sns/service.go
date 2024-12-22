@@ -2,7 +2,7 @@ package sns
 
 import (
 	"balances/configs"
-	"balances/internal/app/domain/events"
+	"balances/internal/shared/domain/events"
 	"balances/pkg/logger"
 	"context"
 
@@ -16,10 +16,9 @@ type Publisher struct {
 }
 
 func NewPublisher(ctx context.Context) *Publisher {
-	svc := NewSNSClient(ctx)
 	return &Publisher{
 		ctx:      ctx,
-		svc:      svc,
+		svc:      NewSNSClient(ctx),
 		topicARN: configs.New().BalancesSNSTopic,
 	}
 }

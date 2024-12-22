@@ -1,7 +1,7 @@
 package accounts
 
 import (
-	"balances/internal/app/domain/events"
+	"balances/internal/shared/domain/events"
 	"context"
 )
 

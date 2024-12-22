@@ -11,11 +11,10 @@ import (
 func NewSQSClient(ctx context.Context) *sqs.Client {
 	cfg, err := aws.NewCustomConfig(ctx)
 	if err != nil {
-		c, err := cfg.Credentials.Retrieve(ctx)
-		logger.Error(ctx, err.Error(), logger.Fields{
-			"KeyID":    c.AccessKeyID,
-			"SecretID": c.SecretAccessKey,
-			"Expires":  c.Expires,
+		logger.Fatal(ctx, "falha ao carregar configuração:", logger.Fields{
+			"error":      err.Error(),
+			"AwsRegion":  cfg.Region,
+			"AwsAddress": cfg.BaseEndpoint,
 		})
 	}
 	return sqs.NewFromConfig(cfg)
