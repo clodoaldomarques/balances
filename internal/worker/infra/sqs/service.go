@@ -2,7 +2,7 @@ package sqs
 
 import (
 	"balances/configs"
-	"balances/internal/app/domain/events"
+	"balances/internal/shared/domain/events"
 	"balances/pkg/logger"
 	"context"
 	"encoding/json"

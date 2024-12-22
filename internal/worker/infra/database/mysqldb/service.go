@@ -2,16 +2,18 @@ package mysqldb
 
 import (
 	"balances/internal/app/domain/accounts"
+	"balances/internal/worker/domain/daily"
 	"balances/pkg/logger"
 	"context"
 	"database/sql"
+	"time"
 )
 
 var (
-	INSERT_ACCOUNT = `insert into accounts (account_id, org_id, limits, balances, created_at, updated_at, status, version) values (?, ?, ?, ?, ?, ?, ?, ?)`
-	SELECT_ACCOUNT = `select account_id, org_id, limits, balances, created_at, updated_at, status, version from accounts where account_id = ? and org_id = ?`
-	UPDATE_ACCOUNT = `update accounts set limits = ?, balances = ?, updated_at = ?, status = ?, version = ? where account_id = ? and org_id = ?`
-	INSERT_ENTRIES = `insert into entries (tracking_id, account_id, org_id, impacts, created_at) values (?, ?, ?, ?, ?)`
+	INSERT_BALANCE            = `insert into daily_balances (date, account_id, org_id, balances, version) values (?, ?, ?, ?, ?)`
+	UPDATE_BALANCE            = `update daily_balances set balances = ?, version = ? where date = ? and  account_id = ? and org_id = ?`
+	SELECT_LAST_BALANCE       = `select db.date, db.account_id, db.org_id, db.balances, db.version from daily_balances db WHERE db.account_id = ? and db.org_id = ? order by db.date DESC limit 1`
+	SELECT_BALANCES_BY_PERIOD = `select db.date, db.account_id, db.org_id, db.balances, db.version from daily_balances db where db.account_id = ? and db.org_id = ? and db.date BETWEEN ? and ? order by db.date`
 )
 
 type Repository struct {
@@ -31,6 +33,20 @@ func NewRepository(ctx context.Context) *Repository {
 
 func (r Repository) Close() {
 	r.db.Close()
+}
+
+func (r Repository) SaveNewBalance(ctx context.Context, b daily.Balance) error {
+	return nil
+}
+func (r Repository) UpdateExistingBalance(ctx context.Context, b daily.Balance) error {
+	return nil
+}
+func (r Repository) RetrieveLastBalance(ctx context.Context, accountID int64, orgID string) (daily.Balance, error) {
+	return daily.Balance{}, nil
+
+}
+func (r Repository) RetrieveBalanceByPeriod(ctx context.Context, accountID int64, orgID string, initialDate, finalDate time.Time) ([]daily.Balance, error) {
+	return nil, nil
 }
 
 func (r Repository) SaveNewAccount(ctx context.Context, a accounts.Account) error {

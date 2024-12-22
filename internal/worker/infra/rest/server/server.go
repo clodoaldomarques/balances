@@ -17,7 +17,6 @@ func New() *echo.Echo {
 }
 
 func routes(e *echo.Echo) {
-	// health check
 	e.GET("/", HealthCheck)
 }
 

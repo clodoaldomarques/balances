@@ -16,3 +16,15 @@ IF NOT EXISTS CREATE TABLE entries(
     impacts json not null,
     created_at timestamp default current_timestamp
 );
+
+CREATE TABLE daily_balances (
+    date date not null,
+    account_id bigint not null,
+    org_id varchar(100) not null,
+    balances json not null,
+    version bigint not null default 1,
+    primary key (date, account_id, org_id)
+);
+
+
+--insert into daily_balances (date, account_id, org_id, balances, version) select cast(a.updated_at as date) as date, a.account_id, a.org_id, a.balances, a.version from balances.accounts a 

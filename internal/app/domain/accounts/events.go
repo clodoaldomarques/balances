@@ -9,6 +9,12 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+var (
+	CREATE_ACCOUNT events.EventType = "create_account"
+	UPDATE_ACCOUNT events.EventType = "update_account"
+	PROCESS_ENTRY  events.EventType = "process_entry"
+)
+
 type CreateAccountEvent struct {
 	AccountID int64              `json:"account_id"`
 	OrgID     string             `json:"org_id"`
@@ -32,7 +38,7 @@ func buildCreateAccountEvent(a Account) events.Event {
 
 	return events.Event{
 		EventID:   uuid.New(),
-		EventType: "create_account",
+		EventType: CREATE_ACCOUNT,
 		Data:      evt,
 		EventDate: time.Now(),
 	}
@@ -42,6 +48,7 @@ type UpdateAccountEvent struct {
 	AccountID int64              `json:"account_id"`
 	OrgID     string             `json:"org_id"`
 	Limits    commons.DecimalMap `json:"limits"`
+	Balances  commons.DecimalMap `json:"balances"`
 	Status    string             `json:"status"`
 	UpdatedAt time.Time          `json:"updated_at"`
 	Version   int64              `json:"version"`
@@ -52,6 +59,7 @@ func buildUpdateAccountEvent(a Account) events.Event {
 		AccountID: a.AccountID,
 		OrgID:     a.OrgID,
 		Limits:    a.Limits,
+		Balances:  a.Balances,
 		UpdatedAt: a.UpdatedAt,
 		Status:    string(a.Status),
 		Version:   a.Version,
@@ -59,7 +67,7 @@ func buildUpdateAccountEvent(a Account) events.Event {
 
 	return events.Event{
 		EventID:   uuid.New(),
-		EventType: "update_account",
+		EventType: UPDATE_ACCOUNT,
 		Data:      evt,
 		EventDate: time.Now(),
 	}
@@ -70,6 +78,7 @@ type ProcessEntryEvent struct {
 	OrgID      string             `json:"org_id"`
 	TrackingID string             `json:"tracking_id"`
 	Impacts    []ImpactEvent      `json:"impacts"`
+	Limits     commons.DecimalMap `json:"limits"`
 	Balances   commons.DecimalMap `json:"balances"`
 	Version    int64              `json:"version"`
 	CreatedAt  time.Time          `json:"created_at"`
@@ -81,6 +90,7 @@ func buildProcessEntryEvent(a Account, e Entry) events.Event {
 		OrgID:      a.OrgID,
 		TrackingID: e.TrackingID,
 		Impacts:    buildImpactEvents(e.Impacts),
+		Limits:     a.Limits,
 		Balances:   a.Balances,
 		Version:    a.Version,
 		CreatedAt:  e.CreatedAt,
@@ -88,7 +98,7 @@ func buildProcessEntryEvent(a Account, e Entry) events.Event {
 
 	return events.Event{
 		EventID:   uuid.New(),
-		EventType: "process_entry",
+		EventType: PROCESS_ENTRY,
 		Data:      evt,
 		EventDate: time.Now(),
 	}

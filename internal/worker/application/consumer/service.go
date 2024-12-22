@@ -14,3 +14,7 @@ func New(ctx context.Context) *Consumer {
 		sqs: sqs.New(ctx, 10, 1),
 	}
 }
+
+func Start() {
+
+}
