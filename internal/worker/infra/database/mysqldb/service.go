@@ -1,7 +1,6 @@
 package mysqldb
 
 import (
-	"balances/internal/app/domain/accounts"
 	"balances/internal/worker/domain/daily"
 	"balances/pkg/logger"
 	"context"
@@ -36,133 +35,62 @@ func (r Repository) Close() {
 }
 
 func (r Repository) SaveNewBalance(ctx context.Context, b daily.Balance) error {
+	bt := buildBalanceTable(b)
+	statement, err := r.db.Prepare(INSERT_BALANCE)
+	if err != nil {
+		logger.Error(ctx, "error on save new balance", logger.Fields{"balance": b, "error": err.Error(), "sql": INSERT_BALANCE})
+		return err
+	}
+	defer statement.Close()
+	_, err = statement.Exec(
+		bt.Date,
+		bt.AccountID,
+		bt.OrgID,
+		bt.Balances,
+		bt.Version,
+	)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 func (r Repository) UpdateExistingBalance(ctx context.Context, b daily.Balance) error {
+	bt := buildBalanceTable(b)
+	statement, err := r.db.Prepare(UPDATE_BALANCE)
+	if err != nil {
+		logger.Error(ctx, "error on update existing balance", logger.Fields{"balance": b, "error": err.Error(), "sql": UPDATE_BALANCE})
+		return err
+	}
+	defer statement.Close()
+	_, err = statement.Exec(
+		bt.Balances,
+		bt.Version,
+		bt.Date,
+		bt.AccountID,
+		bt.OrgID,
+	)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 func (r Repository) RetrieveLastBalance(ctx context.Context, accountID int64, orgID string) (daily.Balance, error) {
-	return daily.Balance{}, nil
+	var b Balance
+	err := r.db.QueryRow(SELECT_LAST_BALANCE, accountID, orgID).Scan(
+		&b.Date,
+		&b.AccountID,
+		&b.OrgID,
+		&b.Balances,
+		&b.Version,
+	)
+	if err != nil {
+		logger.Error(ctx, "error on retrieve existing balance", logger.Fields{"account": accountID, "error": err.Error(), "sql": SELECT_LAST_BALANCE})
+		return daily.Balance{}, err
+	}
+	return b.toEntity(), nil
 
 }
+
 func (r Repository) RetrieveBalanceByPeriod(ctx context.Context, accountID int64, orgID string, initialDate, finalDate time.Time) ([]daily.Balance, error) {
 	return nil, nil
-}
-
-func (r Repository) SaveNewAccount(ctx context.Context, a accounts.Account) error {
-	acc := buildAccountTable(a)
-	statement, err := r.db.Prepare(INSERT_ACCOUNT)
-	if err != nil {
-		logger.Error(ctx, "error on save new account", logger.Fields{"account": a, "error": err.Error(), "sql": INSERT_ACCOUNT})
-		return err
-	}
-	defer statement.Close()
-	_, err = statement.Exec(
-		acc.AccountID,
-		acc.OrgID,
-		acc.Limits,
-		acc.Balances,
-		acc.CreatedAt,
-		acc.UpdatedAt,
-		acc.Status,
-		acc.Version,
-	)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-func (r Repository) UpdateExistingAccount(ctx context.Context, a accounts.Account) error {
-	acc := buildAccountTable(a)
-	statement, err := r.db.Prepare(UPDATE_ACCOUNT)
-	if err != nil {
-		logger.Error(ctx, "error on update existing account", logger.Fields{"account": a, "error": err.Error(), "sql": UPDATE_ACCOUNT})
-		return err
-	}
-	defer statement.Close()
-	_, err = statement.Exec(
-		acc.Limits,
-		acc.Balances,
-		acc.UpdatedAt,
-		acc.Status,
-		acc.Version,
-		acc.AccountID,
-		acc.OrgID,
-	)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-func (r Repository) RetrieveAccountByID(ctx context.Context, accountID int64, orgID string) (accounts.Account, error) {
-	var acc Account
-	err := r.db.QueryRow(SELECT_ACCOUNT, accountID, orgID).Scan(
-		&acc.AccountID,
-		&acc.OrgID,
-		&acc.Limits,
-		&acc.Balances,
-		&acc.CreatedAt,
-		&acc.UpdatedAt,
-		&acc.Status,
-		&acc.Version,
-	)
-	if err != nil {
-		logger.Error(ctx, "error on retrieve existing account", logger.Fields{"account": accountID, "error": err.Error(), "sql": SELECT_ACCOUNT})
-		return accounts.Account{}, err
-	}
-	return acc.toEntity(), nil
-}
-
-func (r Repository) SaveEntryAndUpdateAccount(ctx context.Context, e accounts.Entry, a accounts.Account) error {
-	tx, err := r.db.BeginTx(r.ctx, nil)
-	if err != nil {
-		logger.Error(ctx, "error on start new transaction", logger.Fields{"account": a, "entry": e, "error": err.Error()})
-		return err
-	}
-	defer tx.Rollback()
-
-	stat, err := tx.Prepare(INSERT_ENTRIES)
-	if err != nil {
-		logger.Error(ctx, "error on save new entry", logger.Fields{"account": a, "entry": e, "error": err.Error(), "sql": INSERT_ENTRIES})
-		return err
-	}
-	defer stat.Close()
-
-	en, err := buildEntriesTable(e)
-	if err != nil {
-		logger.Error(ctx, "error on parse to table", logger.Fields{"entry": e, "error": err})
-		return err
-	}
-	_, err = stat.Exec(
-		en.TrackingID,
-		en.AccountID,
-		en.OrgID,
-		en.Impacts,
-		en.CreatedAt,
-	)
-	if err != nil {
-		return err
-	}
-
-	acc := buildAccountTable(a)
-	stat, err = tx.Prepare(UPDATE_ACCOUNT)
-	if err != nil {
-		logger.Error(ctx, "error on prepare statement", logger.Fields{"account": a, "error": err.Error(), "sql": UPDATE_ACCOUNT})
-		return err
-	}
-	_, err = stat.Exec(
-		acc.Limits,
-		acc.Balances,
-		acc.UpdatedAt,
-		acc.Status,
-		acc.Version,
-		acc.AccountID,
-		acc.OrgID,
-	)
-	if err != nil {
-		return err
-	}
-
-	tx.Commit()
-	return nil
 }
