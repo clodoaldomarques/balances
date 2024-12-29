@@ -68,12 +68,18 @@ func (c Handler) DeleteMessages(receiptHandles []string) error {
 func messageToEvent(messages []types.Message) (map[string]events.Event, error) {
 	evts := map[string]events.Event{}
 	for _, m := range messages {
-		evt := new(events.Event)
-		err := json.Unmarshal([]byte(*m.Body), evt)
+		var objectMap map[string]string
+		err := json.Unmarshal([]byte(*m.Body), &objectMap)
 		if err != nil {
 			return map[string]events.Event{}, err
 		}
-		evts[*m.ReceiptHandle] = *evt
+
+		var evt events.Event
+		err = json.Unmarshal([]byte(objectMap["Message"]), &evt)
+		if err != nil {
+			return map[string]events.Event{}, err
+		}
+		evts[*m.ReceiptHandle] = evt
 	}
 	return evts, nil
 }

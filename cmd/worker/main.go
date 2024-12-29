@@ -2,6 +2,7 @@ package main
 
 import (
 	"balances/configs"
+	"balances/internal/worker/application/consumer"
 	"balances/internal/worker/infra/rest/server"
 	"balances/pkg/logger"
 	"context"
@@ -10,9 +11,19 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
+	setupSQSConsumer(ctx)
+	setupHttpServer(ctx)
+}
+
+func setupHttpServer(ctx context.Context) {
 	c := configs.New(configs.WithAppPort(5001), configs.WithMysqlDBName("worker"))
 	e := server.New()
 	if err := e.Start(fmt.Sprintf(":%d", c.AppPort)); err != http.ErrServerClosed {
-		logger.Fatal(context.Background(), err.Error(), logger.Fields{})
+		logger.Fatal(ctx, err.Error(), logger.Fields{})
 	}
+}
+
+func setupSQSConsumer(ctx context.Context) {
+	go consumer.New(ctx).Start()
 }

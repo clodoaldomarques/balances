@@ -10,7 +10,7 @@ import (
 
 var (
 	INSERT_BALANCE            = `insert into daily_balances (date, account_id, org_id, balances, version) values (?, ?, ?, ?, ?)`
-	UPDATE_BALANCE            = `update daily_balances set balances = ?, version = ? where date = ? and  account_id = ? and org_id = ?`
+	UPDATE_BALANCE            = `update daily_balances set balances = ?, version = ? where date = ? and  account_id = ? and org_id = ? and version < ?`
 	SELECT_LAST_BALANCE       = `select db.date, db.account_id, db.org_id, db.balances, db.version from daily_balances db WHERE db.account_id = ? and db.org_id = ? order by db.date DESC limit 1`
 	SELECT_BALANCES_BY_PERIOD = `select db.date, db.account_id, db.org_id, db.balances, db.version from daily_balances db where db.account_id = ? and db.org_id = ? and db.date BETWEEN ? and ? order by db.date`
 )
@@ -68,6 +68,7 @@ func (r Repository) UpdateExistingBalance(ctx context.Context, b daily.Balance) 
 		bt.Date,
 		bt.AccountID,
 		bt.OrgID,
+		bt.Version,
 	)
 	if err != nil {
 		return err
