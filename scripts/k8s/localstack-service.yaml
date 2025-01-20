@@ -1,5 +1,3 @@
-
----
 # disk volume claim
 apiVersion: v1
 kind: PersistentVolumeClaim

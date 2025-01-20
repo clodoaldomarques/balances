@@ -35,7 +35,7 @@ kube-delete:
 
 terraform:
 	terraform -chdir=scripts/terraform/ plan
-	terraform -chdir=scripts/terraform/ apply
+	terraform -chdir=scripts/terraform/ apply -auto-approve
 
 terraform-init:
 	terraform -chdir=scripts/terraform/ init

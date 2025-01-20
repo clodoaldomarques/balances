@@ -10,9 +10,9 @@ import (
 )
 
 var (
-	CREATE_ACCOUNT events.EventType = "create_account"
-	UPDATE_ACCOUNT events.EventType = "update_account"
-	PROCESS_ENTRY  events.EventType = "process_entry"
+	CREATE_ACCOUNT events.Type = "create_account"
+	UPDATE_ACCOUNT events.Type = "update_account"
+	PROCESS_ENTRY  events.Type = "process_entry"
 )
 
 type CreateAccountEvent struct {

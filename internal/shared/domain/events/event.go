@@ -7,11 +7,11 @@ import (
 	"github.com/google/uuid"
 )
 
-type EventType string
+type Type string
 
 type Event struct {
 	EventID   uuid.UUID `json:"event_id"`
-	EventType EventType `json:"event_type`
+	EventType Type      `json:"event_type`
 	Data      any       `json:"data"`
 	EventDate time.Time `json:"event_date"`
 }
