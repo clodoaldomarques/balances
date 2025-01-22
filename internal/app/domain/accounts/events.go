@@ -1,7 +1,7 @@
 package accounts
 
 import (
-	"balances/internal/app/domain/commons"
+	"balances/internal/shared/commons"
 	"balances/internal/shared/domain/events"
 	"time"
 

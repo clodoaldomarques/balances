@@ -8,7 +8,6 @@ import (
 	"balances/pkg/logger"
 	"context"
 	"encoding/json"
-	"fmt"
 )
 
 type Consumer struct {
@@ -55,7 +54,13 @@ var eventFunc = map[events.Type]func(context.Context, daily.Service, events.Even
 
 func processCreateAccount(ctx context.Context, s daily.Service, e events.Event) error {
 	var cae daily.CreateAccountEvent
-	if err := json.Unmarshal([]byte(fmt.Sprint(e.Data)), &cae); err != nil {
+
+	jsonStr, err := json.Marshal(e.Data)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(jsonStr, &cae); err != nil {
 		return err
 	}
 
@@ -67,7 +72,12 @@ func processCreateAccount(ctx context.Context, s daily.Service, e events.Event) 
 
 func processUpdateAccount(ctx context.Context, s daily.Service, e events.Event) error {
 	var uae daily.UpdateAccountEvent
-	if err := json.Unmarshal([]byte(fmt.Sprint(e.Data)), &uae); err != nil {
+	jsonStr, err := json.Marshal(e.Data)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(jsonStr, &uae); err != nil {
 		return err
 	}
 
@@ -79,8 +89,12 @@ func processUpdateAccount(ctx context.Context, s daily.Service, e events.Event) 
 
 func processProcessEntry(ctx context.Context, s daily.Service, e events.Event) error {
 	var pee daily.ProcessEntryEvent
-	dt := fmt.Sprint(e.Data)
-	if err := json.Unmarshal([]byte(dt), &pee); err != nil {
+	jsonStr, err := json.Marshal(e.Data)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(jsonStr, &pee); err != nil {
 		return err
 	}
 

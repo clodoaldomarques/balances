@@ -2,7 +2,7 @@ package mysqldb
 
 import (
 	"balances/internal/app/domain/accounts"
-	"balances/internal/app/domain/commons"
+	"balances/internal/shared/commons"
 	"encoding/json"
 	"time"
 

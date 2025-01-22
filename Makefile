@@ -34,6 +34,7 @@ kube-delete:
 	kubectl delete -f scripts/k8s/app-service.yaml
 
 terraform:
+	until nc -z 192.168.49.2 30002; do echo waiting for localstack; sleep 2; done;
 	terraform -chdir=scripts/terraform/ plan
 	terraform -chdir=scripts/terraform/ apply -auto-approve
 

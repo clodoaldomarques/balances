@@ -96,7 +96,7 @@ type ImpactEvent struct {
 
 func parseBalanceDate(d string) time.Time {
 	dt, _ := time.Parse(layout, d)
-	return dt
+	return dt.UTC()
 }
 
 func calculate(limits, balances map[string]decimal.Decimal) map[string]decimal.Decimal {
