@@ -1,5 +1,19 @@
-app-run:
-	go run cmd/app/main.go
+api = balances-api
+worker = balances-worker
+repository = clodoaldomarques
+
+run-app:
+	go run cmd/main.go
+
+build-app:
+	docker build -t $(repository)/$(api):$(version) -f scripts/docker/api/Dockerfile .
+	docker tag $(repository)/$(api):$(version) $(repository)/$(api):latest
+
+push-app:
+	docker push $(repository)/$(api):$(version)
+	docker push $(repository)/$(api):latest
+
+publish-app: build-app push-app	
 
 worker-run:
 	go run cmd/worker/main.go
@@ -7,19 +21,10 @@ worker-run:
 dispatcher-run:
 	go run cmd/dispatcher/main.go
 
-app-build:
-	docker build -t clodoaldomarques/balances-api:$(version) -f scripts/docker/app/Dockerfile .
-	docker build -t clodoaldomarques/balances-api:latest -f scripts/docker/app/Dockerfile .
-
-app-push:
-	docker push clodoaldomarques/balances-api:latest
-	docker push clodoaldomarques/balances-api:$(version)
-
-publish: app-build app-push
 
 kube-secrets:
-	kubectl create secret generic mysql-secrets --from-literal=root='a1s2d3f4' --from-literal=balances='b4l4nc3s'
-	kubectl create secret generic aws-secrets --from-literal=AWS_ACCESS_KEY_ID='test' --from-literal=AWS_SECRET_ACCESS_KEY='test' --from-literal=AWS_SESSION_TOKEN='' --from-literal=aws-account='000000000000' --from-literal=aws-assume-role='' --from-literal=aws-region='us-east-1'
+	kubectl create secret generic mysql-balances --from-literal=root='a1s2d3f4' --from-literal=balances='b4l4nc3s'
+	kubectl create secret generic aws-balances --from-literal=AWS_ACCESS_KEY_ID='test' --from-literal=AWS_SECRET_ACCESS_KEY='test' --from-literal=AWS_SESSION_TOKEN='' --from-literal=aws-account='000000000000' --from-literal=aws-assume-role='' --from-literal=aws-region='us-east-1'
 
 kube-create:
 	kubectl apply -f scripts/k8s/mysql-service.yaml
@@ -43,8 +48,6 @@ terraform-init:
 
 terraform-destroy:
 	terraform -chdir=scripts/terraform/ destroy
-
-minikube: kube-secrets kube-create terraform
 
 test:
 	go test ./... -coverprofile cover.out

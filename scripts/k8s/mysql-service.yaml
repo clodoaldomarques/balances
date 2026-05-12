@@ -6,12 +6,40 @@ data:
   init-db.sql: |
     -- Criação de duas bases de dados
     CREATE DATABASE IF NOT EXISTS balances;
-    CREATE DATABASE IF NOT EXISTS worker;
 
     -- Criação de um usuário e concessão de privilégios
     GRANT ALL PRIVILEGES ON balances.* TO 'admin'@'%';
-    GRANT ALL PRIVILEGES ON worker.* TO 'admin'@'%';
     FLUSH PRIVILEGES;
+
+    USE balances;
+    
+    IF NOT EXISTS CREATE TABLE accounts(
+        account_id bigint primary key,
+        org_id varchar(100) not null,
+        limits json not null,
+        balances json not null,
+        created_at timestamp default current_timestamp,
+        updated_at timestamp default current_timestamp,
+        status varchar(100) not null default "active",
+        version bigint not null default 1
+    );
+
+    IF NOT EXISTS CREATE TABLE entries(
+        tracking_id varchar(36) not null primary key,
+        account_id bigint not null,
+        org_id varchar(100) not null,
+        impacts json not null,
+        created_at timestamp default current_timestamp
+    );
+
+    CREATE TABLE daily_balances (
+        date date not null,
+        account_id bigint not null,
+        org_id varchar(100) not null,
+        balances json not null,
+        version bigint not null default 1,
+        primary key (date, account_id, org_id)
+    );
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -41,14 +69,14 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                  secretKeyRef:
-                   name: mysql-secrets
-                   key: root
+                   name: mysql-balances
+                   key: root          
             - name: MYSQL_USER
               value: admin
             - name: MYSQL_PASSWORD
               valueFrom:
                  secretKeyRef:
-                   name: mysql-secrets
+                   name: mysql-balances
                    key: balances                   
           ports:
             - name: mysql

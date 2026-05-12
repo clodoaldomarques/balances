@@ -35,23 +35,25 @@ spec:
       serviceAccountName: default
       containers:
         - name: localstack-main
-          image: localstack/localstack:stable
+          image: localstack/localstack:3.7.0
           imagePullPolicy: "IfNotPresent"
           env:            
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                  secretKeyRef:
-                   name: aws-secrets
+                   name: aws-balances
                    key: AWS_ACCESS_KEY_ID 
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                  secretKeyRef:
-                   name: aws-secrets
+                   name: aws-balances
                    key: AWS_SECRET_ACCESS_KEY 
             - name: AWS_DEFAULT_REGION
               value: 'us-east-1'                            
             - name: SERVICES
               value: 'sqs,sns,dynamodb'
+            - name: PERSISTENCE
+              value: "1"
           ports:
             - containerPort: 4566
             - containerPort: 4567
