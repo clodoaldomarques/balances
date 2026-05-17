@@ -13,7 +13,7 @@ data:
 
     USE balances;
     
-    IF NOT EXISTS CREATE TABLE accounts(
+    CREATE IF NOT EXISTS TABLE accounts(
         account_id bigint primary key,
         org_id varchar(100) not null,
         limits json not null,
@@ -24,7 +24,7 @@ data:
         version bigint not null default 1
     );
 
-    IF NOT EXISTS CREATE TABLE entries(
+    CREATE IF NOT EXISTS TABLE entries(
         tracking_id varchar(36) not null primary key,
         account_id bigint not null,
         org_id varchar(100) not null,
@@ -32,7 +32,7 @@ data:
         created_at timestamp default current_timestamp
     );
 
-    CREATE TABLE daily_balances (
+    CREATE IF NOT EXISTS TABLE daily_balances (
         date date not null,
         account_id bigint not null,
         org_id varchar(100) not null,
