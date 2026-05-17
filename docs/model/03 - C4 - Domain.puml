@@ -1,0 +1,36 @@
+@startuml 03 - C4 - Domain Diagram
+
+
+class Account {
+    + AccountID : int
+	+ OrgID : string
+	+ Limits : map[string]decimal
+	+ Availables : map[string]decimal
+	+ CreateAt : time
+	+ UpdateAt : time  
+	+ Credit : bool       
+	+ Debit : bool       
+	+ Version : int
+}
+
+class Entries{
+	+ TrackingID : string
+	+ AccountID : int
+	+ OrgID : string
+	+ Impacts : []Impact
+	+ CreateAt : time
+	+ Version : int
+	+ Validate() error
+}
+
+class Impact{
+	+ Operation : string
+	+ Amount : decimal
+	+ AmountConsider:decimal
+	+ Considers : []string
+	+ Validate() error
+}
+
+Account "1" o-- "0..*" Entries
+Entries "1" o-- "1..*" Impact
+@enduml
