@@ -34,19 +34,19 @@ spec:
             - name: MYSQL_PASSWORD
               valueFrom:
                  secretKeyRef:
-                   name: mysql-secrets
+                   name: mysql-balances
                    key: balances               
             - name: AWS_ADDRESS
               value: "http://localstack-service:4566"
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                  secretKeyRef:
-                   name: aws-secrets
+                   name: aws-balances
                    key: AWS_ACCESS_KEY_ID 
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                  secretKeyRef:
-                   name: aws-secrets
+                   name: aws-balances
                    key: AWS_SECRET_ACCESS_KEY 
             - name: AWS_REGION
               value: "us-east-1"              

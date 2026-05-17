@@ -32,18 +32,18 @@ var (
 func New(options ...Option) *Config {
 	singleton.Do(func() {
 		instance = &Config{
-			AppPort:          GetInt("APP_PORT", 8080),
-			MySqlDBUser:      GetString("MYSQL_USER", "admin"),
-			MySqlDBPass:      GetString("MYSQL_PASSWORD", "b4l4nc3s"),
+			AppPort:          GetInt("APP_PORT", 5000),
+			MySqlDBUser:      GetString("MYSQL_USER", ""),
+			MySqlDBPass:      GetString("MYSQL_PASSWORD", ""),
 			MySqlDBHost:      GetString("MYSQL_HOST", "192.168.49.2"),
 			MySqlDBPort:      GetString("MYSQL_PORT", "30001"),
 			MysqlDBName:      GetString("MYSQL_DATABASE", "balances"),
-			AwsAddress:       GetString("AWS_ADDRESS", "http://192.168.49.2:30002"),
-			AwsRegion:        GetString("AWS_REGION", "us-east-1"),
-			AccessKeyID:      GetString("AWS_ACCESS_KEY_ID", "test"),
-			SecretAccessKey:  GetString("AWS_SECRET_ACCESS_KEY", "test"),
-			BalancesSNSTopic: GetString("BALANCES_SNS_TOPIC", "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"),
-			BalancesSQSQueue: GetString("BALANCES_SQS_QUEUE", "http://192.168.49.2:30002/000000000000/balances-sqs-queue"),
+			AwsAddress:       GetString("AWS_ADDRESS", ""),
+			AwsRegion:        GetString("AWS_REGION", ""),
+			AccessKeyID:      GetString("AWS_ACCESS_KEY_ID", ""),
+			SecretAccessKey:  GetString("AWS_SECRET_ACCESS_KEY", ""),
+			BalancesSNSTopic: GetString("BALANCES_SNS_TOPIC", ""),
+			BalancesSQSQueue: GetString("BALANCES_SQS_QUEUE", ""),
 		}
 	})
 
