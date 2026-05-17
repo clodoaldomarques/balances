@@ -1,0 +1,33 @@
+@startuml C4 - Diagrama Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!includeurl ICONURL/devicons/go.puml
+
+AddRelTag("async", $lineStyle = DashedLine())
+SHOW_PERSON_PORTRAIT()
+
+Person_Ext(pagamentos, "Sistema de Pagamentos", "Sistema que orquestra os pagamentos")
+
+System_Boundary(saldos, "Sistema de Saldos"){
+Container(balances_api, "Serviço de Saldos", "Golang", "Processa a solicitação enviada, realizando debitos ou creditos na conta informada", $sprite = "go")
+ContainerQueue(sns, "Servidor de Mensagens", "SNS", "Dados da transação para ser consumido")
+ContainerDb(dbWriter, "Banco de dados de escrita", "MySQL", "Armazena os dados das transações requisitadas")
+
+Rel(pagamentos, balances_api, "Solicita uma transação de Debito ou Credito", "JSON")
+Rel(balances_api, sns, "Publica dados da transação processada", "JSON", $tags = "async")
+Rel(balances_api, dbWriter, "Envia os dados da transação requisitada", "SQL")
+}
+
+System_Boundary(consultas, "Golang", "Sistema de Consultas"){
+Container(searcher_api, "Serviço de Consultas", "Golang", "Processa a solicitação enviada, realizando debitos ou creditos na conta informada", $sprite = "go")
+Container(worker, "Processador de Eventos", "Golang", "Processa os dados da transação e disponibiliza para consulta", $sprite = "go")
+ContainerDb(dbReader, "Banco de dados de leitura", "MySQL", "Armazena os dados da transações processadas")
+ContainerQueue(sqs, "Fila de Mensagens", "SQS", "Fila dos dados da transação para ser consumido")
+Rel(sqs, sns, "Consome dados da transação publicados no tópico", "JSON", $tags = "async")
+Rel_D(worker, sqs, "Consome os dados enfileirados", "JSON", $tags = "async")
+Rel_D(worker, dbReader, "Envia os dados da transação processada", "SQL")
+Rel(searcher_api, dbReader, "Consulta as transações efetivadas", "SQL")
+Rel(pagamentos, searcher_api, "Consulta os saldos", "JSON")
+}
+
+@enduml
