@@ -1,12 +1,13 @@
 package main
 
 import (
-	"balances/configs"
-	"balances/internal/app/infra/rest/server"
-	"balances/pkg/logger"
 	"context"
 	"fmt"
 	"net/http"
+
+	"github.com/clodoaldomarques/balances/configs"
+	"github.com/clodoaldomarques/balances/internal/app/infra/rest/server"
+	"github.com/clodoaldomarques/balances/pkg/logger"
 )
 
 func main() {

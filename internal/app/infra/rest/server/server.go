@@ -2,7 +2,6 @@ package server
 
 import (
 	"github.com/clodoaldomarques/balances/internal/app/infra/rest/accounts"
-	"github.com/clodoaldomarques/balances/pkg/logger"
 
 	"net/http"
 
@@ -43,7 +42,6 @@ func routes(e *echo.Echo) {
 }
 
 func HealthCheck(c echo.Context) error {
-	logger.Info(c.Request().Context(), "health check", logger.Fields{})
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"data": "Server is up and running",
 	})
