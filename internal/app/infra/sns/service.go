@@ -1,10 +1,11 @@
 package sns
 
 import (
-	"balances/configs"
-	"balances/internal/shared/domain/events"
-	"balances/pkg/logger"
 	"context"
+
+	"github.com/clodoaldomarques/balances/configs"
+	"github.com/clodoaldomarques/balances/internal/shared/domain/events"
+	"github.com/clodoaldomarques/balances/pkg/logger"
 
 	"github.com/aws/aws-sdk-go-v2/service/sns"
 )

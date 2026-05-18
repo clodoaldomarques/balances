@@ -1,10 +1,11 @@
 package mysqldb
 
 import (
-	"balances/internal/app/domain/accounts"
-	"balances/pkg/logger"
 	"context"
 	"database/sql"
+
+	"github.com/clodoaldomarques/balances/internal/app/domain/accounts"
+	"github.com/clodoaldomarques/balances/pkg/logger"
 )
 
 var (

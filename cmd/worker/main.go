@@ -1,13 +1,14 @@
 package main
 
 import (
-	"balances/configs"
-	"balances/internal/worker/application/consumer"
-	"balances/internal/worker/infra/rest/server"
-	"balances/pkg/logger"
 	"context"
 	"fmt"
 	"net/http"
+
+	"github.com/clodoaldomarques/balances/configs"
+	"github.com/clodoaldomarques/balances/internal/worker/application/consumer"
+	"github.com/clodoaldomarques/balances/internal/worker/infra/rest/server"
+	"github.com/clodoaldomarques/balances/pkg/logger"
 )
 
 func main() {

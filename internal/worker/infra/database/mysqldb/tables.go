@@ -1,9 +1,10 @@
 package mysqldb
 
 import (
-	"balances/internal/shared/commons"
-	"balances/internal/worker/domain/daily"
 	"time"
+
+	"github.com/clodoaldomarques/balances/internal/shared/commons"
+	"github.com/clodoaldomarques/balances/internal/worker/domain/daily"
 )
 
 type Balance struct {

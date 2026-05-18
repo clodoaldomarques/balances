@@ -1,12 +1,14 @@
 package sqs
 
 import (
-	"balances/configs"
-	"balances/internal/shared/domain/events"
-	"balances/pkg/logger"
 	"context"
 	"encoding/json"
 	"fmt"
+
+	"github.com/clodoaldomarques/balances/pkg/logger"
+
+	"github.com/clodoaldomarques/balances/configs"
+	"github.com/clodoaldomarques/balances/internal/shared/domain/events"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"

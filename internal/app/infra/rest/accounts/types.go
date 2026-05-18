@@ -1,11 +1,12 @@
 package accounts
 
 import (
-	"balances/internal/app/domain/accounts"
 	"errors"
 	"fmt"
 	"slices"
 	"time"
+
+	"github.com/clodoaldomarques/balances/internal/app/domain/accounts"
 
 	"github.com/shopspring/decimal"
 )

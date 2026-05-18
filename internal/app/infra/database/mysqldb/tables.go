@@ -1,10 +1,11 @@
 package mysqldb
 
 import (
-	"balances/internal/app/domain/accounts"
-	"balances/internal/shared/commons"
 	"encoding/json"
 	"time"
+
+	"github.com/clodoaldomarques/balances/internal/app/domain/accounts"
+	"github.com/clodoaldomarques/balances/internal/shared/commons"
 
 	"github.com/shopspring/decimal"
 )

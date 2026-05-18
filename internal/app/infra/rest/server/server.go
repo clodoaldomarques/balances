@@ -1,8 +1,8 @@
 package server
 
 import (
-	"balances/internal/app/infra/rest/accounts"
-	"balances/pkg/logger"
+	"github.com/clodoaldomarques/balances/internal/app/infra/rest/accounts"
+	"github.com/clodoaldomarques/balances/pkg/logger"
 
 	"net/http"
 

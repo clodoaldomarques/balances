@@ -1,8 +1,9 @@
 package consumer
 
 import (
-	"balances/internal/shared/domain/events"
 	"context"
+
+	"github.com/clodoaldomarques/balances/internal/shared/domain/events"
 )
 
 //go:generate mockgen -source=interfaces.go -destination=mock.go -package=consumer

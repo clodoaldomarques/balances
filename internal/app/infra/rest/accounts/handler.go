@@ -1,11 +1,12 @@
 package accounts
 
 import (
-	"balances/internal/app/domain/accounts"
-	"balances/internal/app/infra/database/mysqldb"
-	"balances/internal/app/infra/sns"
 	"net/http"
 	"strconv"
+
+	"github.com/clodoaldomarques/balances/internal/app/domain/accounts"
+	"github.com/clodoaldomarques/balances/internal/app/infra/database/mysqldb"
+	"github.com/clodoaldomarques/balances/internal/app/infra/sns"
 
 	"github.com/labstack/echo/v4"
 )

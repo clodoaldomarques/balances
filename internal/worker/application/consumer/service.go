@@ -1,13 +1,14 @@
 package consumer
 
 import (
-	"balances/internal/shared/domain/events"
-	"balances/internal/worker/domain/daily"
-	"balances/internal/worker/infra/database/mysqldb"
-	"balances/internal/worker/infra/sqs"
-	"balances/pkg/logger"
 	"context"
 	"encoding/json"
+
+	"github.com/clodoaldomarques/balances/internal/shared/domain/events"
+	"github.com/clodoaldomarques/balances/internal/worker/domain/daily"
+	"github.com/clodoaldomarques/balances/internal/worker/infra/database/mysqldb"
+	"github.com/clodoaldomarques/balances/internal/worker/infra/sqs"
+	"github.com/clodoaldomarques/balances/pkg/logger"
 )
 
 type Consumer struct {

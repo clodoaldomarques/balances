@@ -1,11 +1,12 @@
 package server
 
 import (
-	"balances/pkg/logger"
 	"bytes"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/clodoaldomarques/balances/pkg/logger"
 
 	"github.com/labstack/echo/v4"
 )

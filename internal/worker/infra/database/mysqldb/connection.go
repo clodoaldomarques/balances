@@ -1,10 +1,11 @@
 package mysqldb
 
 import (
-	"balances/configs"
-	"balances/pkg/logger"
 	"context"
 	"database/sql"
+
+	"github.com/clodoaldomarques/balances/configs"
+	"github.com/clodoaldomarques/balances/pkg/logger"
 
 	_ "github.com/go-sql-driver/mysql"
 )

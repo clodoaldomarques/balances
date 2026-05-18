@@ -1,9 +1,10 @@
 package sns
 
 import (
-	"balances/pkg/aws"
-	"balances/pkg/logger"
 	"context"
+
+	"github.com/clodoaldomarques/balances/pkg/aws"
+	"github.com/clodoaldomarques/balances/pkg/logger"
 
 	"github.com/aws/aws-sdk-go-v2/service/sns"
 )

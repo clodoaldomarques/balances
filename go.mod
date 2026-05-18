@@ -1,4 +1,4 @@
-module balances
+module github.com/clodoaldomarques/balances
 
 go 1.22.0
 

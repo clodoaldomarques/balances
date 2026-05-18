@@ -1,8 +1,9 @@
 package daily
 
 import (
-	"balances/internal/shared/domain/events"
 	"time"
+
+	"github.com/clodoaldomarques/balances/internal/shared/domain/events"
 
 	"github.com/shopspring/decimal"
 )

@@ -5,9 +5,10 @@
 package accounts
 
 import (
-	events "balances/internal/shared/domain/events"
 	context "context"
 	reflect "reflect"
+
+	events "github.com/clodoaldomarques/balances/internal/shared/domain/events"
 
 	gomock "github.com/golang/mock/gomock"
 )

@@ -1,9 +1,10 @@
 package aws
 
 import (
-	"balances/configs"
 	"context"
 	"fmt"
+
+	"github.com/clodoaldomarques/balances/configs"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
