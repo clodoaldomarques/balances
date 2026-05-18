@@ -3,6 +3,7 @@ package server
 import (
 	"balances/internal/app/infra/rest/accounts"
 	"balances/pkg/logger"
+
 	"net/http"
 
 	"github.com/go-playground/validator"
@@ -22,6 +23,14 @@ func New() *echo.Echo {
 func routes(e *echo.Echo) {
 
 	e.Validator = &CustomValidator{validator: validator.New()}
+
+	// logger interceptor
+	e.Use(InterceptorWithConfig(InterceptorConfig{
+		MaxBodySize:     5 * 1024,
+		LogRequestBody:  true,
+		LogResponseBody: false, // ligue só para debug
+		RedactFields:    []string{"password", "token", "credit_card"},
+	}))
 
 	// health check
 	e.GET("/", HealthCheck)
