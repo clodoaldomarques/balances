@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: balances-app
+  labels:
+    com.job.service: balances-app
+    tier: golang
+spec:
+  selector: 
+    matchLabels:
+      com.job.service: balances-app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: 
+        com.job.service: balances-app
+        tier: golang
+    spec:
+      serviceAccountName: default
+      initContainers:
+        - name: init-db
+          image: mysql:8.0   # imagem que contém o cliente mysql
+          env:
+            - name: MYSQL_HOST
+              value: "mysql-service"
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_DATABASE
+              value: "balances"
+            - name: MYSQL_USER
+              value: "admin"
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: admin_password
+          command:
+            - /bin/bash
+            - -c
+            - |
+              # Aguarda o MySQL estar disponível
+              until mysql -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USER} -p${MYSQL_PASSWORD} -e "SELECT 1" >/dev/null 2>&1; do
+                echo "Aguardando MySQL em ${MYSQL_HOST}:${MYSQL_PORT}..."
+                sleep 2
+              done
+              echo "MySQL OK - Executando schema..."
+              # Executa o script SQL montado
+              mysql -h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} < /scripts/schema.sql
+              echo "Schema aplicado com sucesso."
+          volumeMounts:
+            - name: schema-volume
+              mountPath: /scripts
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+      containers:
+        - name: balances-app
+          image: clodoaldomarques/balances-api:latest
+          imagePullPolicy: "Always"
+          env:
+            - name: MYSQL_HOST
+              value: "mysql-service"
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_DATABASE
+              value: "balances"
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: admin_user   
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: admin_password               
+            - name: AWS_ADDRESS
+              value: "http://localstack-service:4566"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: AWS_ACCESS_KEY_ID 
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: AWS_SECRET_ACCESS_KEY 
+            - name: AWS_REGION
+              value: "us-east-1"              
+            - name: BALANCES_SNS_TOPIC
+              value: "arn:aws:sns:us-east-1:000000000000:balances-sns-topic"         
+          ports:
+            - name: balances-app
+              containerPort: 5000
+          # Opcional: resources para o container principal
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+      volumes:
+        - name: schema-volume
+          configMap:
+            name: balances-schema

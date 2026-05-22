@@ -21,22 +21,13 @@ worker-run:
 dispatcher-run:
 	go run cmd/dispatcher/main.go
 
+kube-apply:
+	kubectl apply -f scripts/k8s/
 
-kube-secrets:
-	kubectl create secret generic mysql-balances --from-literal=root='a1s2d3f4' --from-literal=balances='b4l4nc3s'
-	kubectl create secret generic aws-balances --from-literal=AWS_ACCESS_KEY_ID='test' --from-literal=AWS_SECRET_ACCESS_KEY='test' --from-literal=AWS_SESSION_TOKEN='' --from-literal=aws-account='000000000000' --from-literal=aws-assume-role='' --from-literal=aws-region='us-east-1'
+kube-destroy:
+	kubectl delete -f scripts/k8s/ --ignore-not-found
 
-kube-create:
-	kubectl apply -f scripts/k8s/mysql-service.yaml
-	kubectl apply -f scripts/k8s/localstack-service.yaml
-	kubectl apply -f scripts/k8s/redis-service.yaml
-	kubectl apply -f scripts/k8s/app-service.yaml
-
-kube-delete:
-	kubectl delete -f scripts/k8s/mysql-service.yaml
-	kubectl delete -f scripts/k8s/localstack-service.yaml
-	kubectl delete -f scripts/k8s/redis-service.yaml
-	kubectl delete -f scripts/k8s/app-service.yaml
+kube-restart: kube-destroy kube-apply
 
 terraform:
 	until nc -z 192.168.49.2 30002; do echo waiting for localstack; sleep 2; done;
