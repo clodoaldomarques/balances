@@ -3,8 +3,8 @@ package accounts
 import (
 	"time"
 
-	"github.com/clodoaldomarques/balances/internal/shared/commons"
-	"github.com/clodoaldomarques/balances/internal/shared/domain/events"
+	"github.com/clodoaldomarques/balances-api/internal/shared/commons"
+	"github.com/clodoaldomarques/balances-api/internal/shared/domain/events"
 
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"

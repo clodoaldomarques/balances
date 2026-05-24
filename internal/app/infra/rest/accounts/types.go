@@ -6,7 +6,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/clodoaldomarques/balances/internal/app/domain/accounts"
+	"github.com/clodoaldomarques/balances-api/internal/app/domain/accounts"
 
 	"github.com/shopspring/decimal"
 )

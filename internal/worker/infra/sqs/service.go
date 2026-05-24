@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/clodoaldomarques/balances/pkg/logger"
+	"github.com/clodoaldomarques/balances-api/pkg/logger"
 
-	"github.com/clodoaldomarques/balances/configs"
-	"github.com/clodoaldomarques/balances/internal/shared/domain/events"
+	"github.com/clodoaldomarques/balances-api/configs"
+	"github.com/clodoaldomarques/balances-api/internal/shared/domain/events"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"

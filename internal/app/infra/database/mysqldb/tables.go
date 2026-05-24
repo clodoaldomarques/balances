@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/clodoaldomarques/balances/internal/app/domain/accounts"
-	"github.com/clodoaldomarques/balances/internal/shared/commons"
+	"github.com/clodoaldomarques/balances-api/internal/app/domain/accounts"
+	"github.com/clodoaldomarques/balances-api/internal/shared/commons"
 
 	"github.com/shopspring/decimal"
 )

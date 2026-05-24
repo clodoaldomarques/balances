@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/clodoaldomarques/balances/internal/app/infra/rest/accounts"
+	"github.com/clodoaldomarques/balances-api/internal/app/infra/rest/accounts"
 
 	"net/http"
 

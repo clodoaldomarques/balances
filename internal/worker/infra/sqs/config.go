@@ -3,8 +3,8 @@ package sqs
 import (
 	"context"
 
-	"github.com/clodoaldomarques/balances/pkg/aws"
-	"github.com/clodoaldomarques/balances/pkg/logger"
+	"github.com/clodoaldomarques/balances-api/pkg/aws"
+	"github.com/clodoaldomarques/balances-api/pkg/logger"
 
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )

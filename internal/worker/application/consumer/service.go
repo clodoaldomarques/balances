@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/clodoaldomarques/balances/internal/shared/domain/events"
-	"github.com/clodoaldomarques/balances/internal/worker/domain/daily"
-	"github.com/clodoaldomarques/balances/internal/worker/infra/database/mysqldb"
-	"github.com/clodoaldomarques/balances/internal/worker/infra/sqs"
-	"github.com/clodoaldomarques/balances/pkg/logger"
+	"github.com/clodoaldomarques/balances-api/internal/shared/domain/events"
+	"github.com/clodoaldomarques/balances-api/internal/worker/domain/daily"
+	"github.com/clodoaldomarques/balances-api/internal/worker/infra/database/mysqldb"
+	"github.com/clodoaldomarques/balances-api/internal/worker/infra/sqs"
+	"github.com/clodoaldomarques/balances-api/pkg/logger"
 )
 
 type Consumer struct {

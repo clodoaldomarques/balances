@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/clodoaldomarques/balances/internal/app/domain/accounts"
-	"github.com/clodoaldomarques/balances/internal/app/infra/database/mysqldb"
-	"github.com/clodoaldomarques/balances/internal/app/infra/sns"
+	"github.com/clodoaldomarques/balances-api/internal/app/domain/accounts"
+	"github.com/clodoaldomarques/balances-api/internal/app/infra/database/mysqldb"
+	"github.com/clodoaldomarques/balances-api/internal/app/infra/sns"
 
 	"github.com/labstack/echo/v4"
 )

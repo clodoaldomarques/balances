@@ -8,7 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	events "github.com/clodoaldomarques/balances/internal/shared/domain/events"
+	events "github.com/clodoaldomarques/balances-api/internal/shared/domain/events"
 
 	gomock "github.com/golang/mock/gomock"
 )

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/clodoaldomarques/balances/pkg/logger"
+	"github.com/clodoaldomarques/balances-api/pkg/logger"
 
 	"github.com/labstack/echo/v4"
 )

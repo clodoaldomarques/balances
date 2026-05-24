@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/clodoaldomarques/balances/internal/worker/domain/daily"
-	"github.com/clodoaldomarques/balances/pkg/logger"
+	"github.com/clodoaldomarques/balances-api/internal/worker/domain/daily"
+	"github.com/clodoaldomarques/balances-api/pkg/logger"
 )
 
 var (

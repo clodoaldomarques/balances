@@ -3,7 +3,7 @@ package daily
 import (
 	"time"
 
-	"github.com/clodoaldomarques/balances/internal/shared/domain/events"
+	"github.com/clodoaldomarques/balances-api/internal/shared/domain/events"
 
 	"github.com/shopspring/decimal"
 )

@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/clodoaldomarques/balances/internal/app/domain/accounts"
-	"github.com/clodoaldomarques/balances/pkg/logger"
+	"github.com/clodoaldomarques/balances-api/internal/app/domain/accounts"
+	"github.com/clodoaldomarques/balances-api/pkg/logger"
 )
 
 var (

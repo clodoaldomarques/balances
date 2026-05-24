@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/clodoaldomarques/balances/configs"
-	"github.com/clodoaldomarques/balances/internal/worker/application/consumer"
-	"github.com/clodoaldomarques/balances/internal/worker/infra/rest/server"
-	"github.com/clodoaldomarques/balances/pkg/logger"
+	"github.com/clodoaldomarques/balances-api/configs"
+	"github.com/clodoaldomarques/balances-api/internal/worker/application/consumer"
+	"github.com/clodoaldomarques/balances-api/internal/worker/infra/rest/server"
+	"github.com/clodoaldomarques/balances-api/pkg/logger"
 )
 
 func main() {
