@@ -3,14 +3,15 @@ package sqs
 import (
 	"context"
 
-	"github.com/clodoaldomarques/balances-api/pkg/aws"
-	"github.com/clodoaldomarques/balances-api/pkg/logger"
-
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
+	"github.com/clodoaldomarques/balances-api/configs"
+	"github.com/clodoaldomarques/core-sdk/pkg/aws"
+	"github.com/clodoaldomarques/core-sdk/pkg/logger"
 )
 
 func NewSQSClient(ctx context.Context) *sqs.Client {
-	cfg, err := aws.NewCustomConfig(ctx)
+	c := configs.New()
+	cfg, err := aws.NewCustomConfig(ctx, c.AwsRegion, c.AwsAddress, c.AccessKeyID, c.SecretAccessKey)
 	if err != nil {
 		logger.Fatal(ctx, "falha ao carregar configuração:", logger.Fields{
 			"error":      err.Error(),

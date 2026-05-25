@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/clodoaldomarques/balances-api/internal/app/infra/rest/accounts"
+	"github.com/clodoaldomarques/core-sdk/pkg/logger"
 
 	"net/http"
 
@@ -24,7 +25,7 @@ func routes(e *echo.Echo) {
 	e.Validator = &CustomValidator{validator: validator.New()}
 
 	// logger interceptor
-	e.Use(InterceptorWithConfig(InterceptorConfig{
+	e.Use(logger.InterceptorWithConfig(logger.InterceptorConfig{
 		MaxBodySize:     5 * 1024,
 		LogRequestBody:  true,
 		LogResponseBody: false, // ligue só para debug

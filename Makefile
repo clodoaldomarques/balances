@@ -2,24 +2,18 @@ api = balances-api
 worker = balances-worker
 repository = clodoaldomarques
 
-run-app:
+run:
 	go run cmd/main.go
 
-build-app:
+build:
 	docker build -t $(repository)/$(api):$(version) -f scripts/docker/app/Dockerfile .
 	docker tag $(repository)/$(api):$(version) $(repository)/$(api):latest
 
-push-app:
+push:
 	docker push $(repository)/$(api):$(version)
 	docker push $(repository)/$(api):latest
 
-publish-app: build-app push-app	
-
-worker-run:
-	go run cmd/worker/main.go
-
-dispatcher-run:
-	go run cmd/dispatcher/main.go
+publish: build push	
 
 kube-apply:
 	kubectl apply -f scripts/k8s/

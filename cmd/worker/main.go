@@ -8,7 +8,7 @@ import (
 	"github.com/clodoaldomarques/balances-api/configs"
 	"github.com/clodoaldomarques/balances-api/internal/worker/application/consumer"
 	"github.com/clodoaldomarques/balances-api/internal/worker/infra/rest/server"
-	"github.com/clodoaldomarques/balances-api/pkg/logger"
+	"github.com/clodoaldomarques/core-sdk/pkg/logger"
 )
 
 func main() {

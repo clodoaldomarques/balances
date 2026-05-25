@@ -8,7 +8,7 @@ import (
 	"github.com/clodoaldomarques/balances-api/internal/worker/domain/daily"
 	"github.com/clodoaldomarques/balances-api/internal/worker/infra/database/mysqldb"
 	"github.com/clodoaldomarques/balances-api/internal/worker/infra/sqs"
-	"github.com/clodoaldomarques/balances-api/pkg/logger"
+	"github.com/clodoaldomarques/core-sdk/pkg/logger"
 )
 
 type Consumer struct {
