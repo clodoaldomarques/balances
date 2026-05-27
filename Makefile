@@ -6,7 +6,7 @@ run:
 	go run cmd/main.go
 
 build:
-	docker build -t $(repository)/$(api):$(version) -f scripts/docker/app/Dockerfile .
+	docker build -t $(repository)/$(api):$(version) -f scripts/docker/Dockerfile .
 	docker tag $(repository)/$(api):$(version) $(repository)/$(api):latest
 
 push:

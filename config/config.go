@@ -8,18 +8,18 @@ import (
 )
 
 type Config struct {
-	AppPort          int
-	MySqlDBUser      string
-	MySqlDBPass      string
-	MySqlDBHost      string
-	MySqlDBPort      string
-	MysqlDBName      string
-	AwsAddress       string
-	AwsRegion        string
-	AccessKeyID      string
-	SecretAccessKey  string
-	BalancesSNSTopic string
-	BalancesSQSQueue string
+	AppPort            int
+	MySqlDBUser        string
+	MySqlDBPass        string
+	MySqlDBHost        string
+	MySqlDBPort        string
+	MysqlDBName        string
+	AwsAddress         string
+	AwsRegion          string
+	AwsAccessKeyID     string
+	AwsSecretAccessKey string
+	BalancesSNSTopic   string
+	BalancesSQSQueue   string
 }
 
 type Option func(*Config)
@@ -32,18 +32,18 @@ var (
 func New(options ...Option) *Config {
 	singleton.Do(func() {
 		instance = &Config{
-			AppPort:          GetInt("APP_PORT", 5000),
-			MySqlDBUser:      GetString("MYSQL_USER", ""),
-			MySqlDBPass:      GetString("MYSQL_PASSWORD", ""),
-			MySqlDBHost:      GetString("MYSQL_HOST", "192.168.49.2"),
-			MySqlDBPort:      GetString("MYSQL_PORT", "30001"),
-			MysqlDBName:      GetString("MYSQL_DATABASE", "balances"),
-			AwsAddress:       GetString("AWS_ADDRESS", ""),
-			AwsRegion:        GetString("AWS_REGION", ""),
-			AccessKeyID:      GetString("AWS_ACCESS_KEY_ID", ""),
-			SecretAccessKey:  GetString("AWS_SECRET_ACCESS_KEY", ""),
-			BalancesSNSTopic: GetString("BALANCES_SNS_TOPIC", ""),
-			BalancesSQSQueue: GetString("BALANCES_SQS_QUEUE", ""),
+			AppPort:            GetInt("APP_PORT", 5000),
+			MySqlDBUser:        GetString("MYSQL_USER", ""),
+			MySqlDBPass:        GetString("MYSQL_PASSWORD", ""),
+			MySqlDBHost:        GetString("MYSQL_HOST", "192.168.49.2"),
+			MySqlDBPort:        GetString("MYSQL_PORT", "30001"),
+			MysqlDBName:        GetString("MYSQL_DATABASE", "balances"),
+			AwsAddress:         GetString("AWS_ADDRESS", ""),
+			AwsRegion:          GetString("AWS_REGION", ""),
+			AwsAccessKeyID:     GetString("AWS_ACCESS_KEY_ID", ""),
+			AwsSecretAccessKey: GetString("AWS_SECRET_ACCESS_KEY", ""),
+			BalancesSNSTopic:   GetString("BALANCES_SNS_TOPIC", ""),
+			BalancesSQSQueue:   GetString("BALANCES_SQS_QUEUE", ""),
 		}
 	})
 
@@ -102,6 +102,20 @@ func WithSnsAccountTopic(SnsAccountTopic string) Option {
 	return func(c *Config) {
 		c.BalancesSNSTopic = SnsAccountTopic
 	}
+}
+
+func (c Config) Region() string {
+	return c.AwsRegion
+}
+
+func (c Config) Address() string {
+	return c.AwsAddress
+}
+func (c Config) AccessKeyID() string {
+	return c.AwsAccessKeyID
+}
+func (c Config) SecretAccessKey() string {
+	return c.AwsSecretAccessKey
 }
 
 func (c Config) GetMySQLConnectionString() string {
