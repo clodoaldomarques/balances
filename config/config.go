@@ -118,6 +118,10 @@ func (c Config) SecretAccessKey() string {
 	return c.AwsSecretAccessKey
 }
 
+func (c Config) TopicARN() string {
+	return c.BalancesSNSTopic
+}
+
 func (c Config) GetMySQLConnectionString() string {
 	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		c.MySqlDBUser,

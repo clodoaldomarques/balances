@@ -12,8 +12,8 @@ type Repository interface {
 	SaveEntryAndUpdateAccount(ctx context.Context, e Entry, a Account) error
 }
 
-type Publisher interface {
-	Emit(ctx context.Context, e Event)
+type Topic interface {
+	Emit(ctx context.Context, e Event) error
 }
 
 type Event interface {

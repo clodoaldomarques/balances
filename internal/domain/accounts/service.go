@@ -8,10 +8,10 @@ import (
 
 type Service struct {
 	rep Repository
-	pub Publisher
+	pub Topic
 }
 
-func NewService(r Repository, p Publisher) *Service {
+func NewService(r Repository, p Topic) *Service {
 	return &Service{
 		rep: r,
 		pub: p,

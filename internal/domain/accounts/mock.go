@@ -91,39 +91,41 @@ func (mr *MockRepositoryMockRecorder) UpdateExistingAccount(ctx, a interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateExistingAccount", reflect.TypeOf((*MockRepository)(nil).UpdateExistingAccount), ctx, a)
 }
 
-// MockPublisher is a mock of Publisher interface.
-type MockPublisher struct {
+// MockTopic is a mock of Topic interface.
+type MockTopic struct {
 	ctrl     *gomock.Controller
-	recorder *MockPublisherMockRecorder
+	recorder *MockTopicMockRecorder
 }
 
-// MockPublisherMockRecorder is the mock recorder for MockPublisher.
-type MockPublisherMockRecorder struct {
-	mock *MockPublisher
+// MockTopicMockRecorder is the mock recorder for MockTopic.
+type MockTopicMockRecorder struct {
+	mock *MockTopic
 }
 
-// NewMockPublisher creates a new mock instance.
-func NewMockPublisher(ctrl *gomock.Controller) *MockPublisher {
-	mock := &MockPublisher{ctrl: ctrl}
-	mock.recorder = &MockPublisherMockRecorder{mock}
+// NewMockTopic creates a new mock instance.
+func NewMockTopic(ctrl *gomock.Controller) *MockTopic {
+	mock := &MockTopic{ctrl: ctrl}
+	mock.recorder = &MockTopicMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockPublisher) EXPECT() *MockPublisherMockRecorder {
+func (m *MockTopic) EXPECT() *MockTopicMockRecorder {
 	return m.recorder
 }
 
 // Emit mocks base method.
-func (m *MockPublisher) Emit(ctx context.Context, e Event) {
+func (m *MockTopic) Emit(ctx context.Context, e Event) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Emit", ctx, e)
+	ret := m.ctrl.Call(m, "Emit", ctx, e)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Emit indicates an expected call of Emit.
-func (mr *MockPublisherMockRecorder) Emit(ctx, e interface{}) *gomock.Call {
+func (mr *MockTopicMockRecorder) Emit(ctx, e interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Emit", reflect.TypeOf((*MockPublisher)(nil).Emit), ctx, e)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Emit", reflect.TypeOf((*MockTopic)(nil).Emit), ctx, e)
 }
 
 // MockEvent is a mock of Event interface.
